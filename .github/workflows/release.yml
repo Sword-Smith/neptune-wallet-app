@@ -17,7 +17,11 @@ jobs:
       matrix:
         include:
           - platform: "macos-latest" # For your universal-apple-darwin
-          - platform: "ubuntu-22.04" # For Linux and Windows-cross
+          - platform: "ubuntu-22.04"
+            args: "" # Standard Linux build
+          - platform: "ubuntu-22.04"
+            args: "--runner cargo-xwin --target x86_64-pc-windows-msvc"
+            windows_cross: true # Custom flag for our conditional steps
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -38,17 +42,19 @@ jobs:
         if: matrix.platform == 'macos-latest'
         run: rustup target add aarch64-apple-darwin x86_64-apple-darwin
 
-      - name: install cargo-xwin and windows target
-        if: matrix.platform == 'ubuntu-22.04'
-        run: |
-          rustup target add x86_64-pc-windows-msvc
-          cargo install cargo-xwin
-
       - name: install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev
+
+      - name: setup windows cross-build dependencies
+        if: matrix.windows_cross
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nsis lld llvm
+          rustup target add x86_64-pc-windows-msvc
+          cargo install cargo-xwin
 
       - name: install frontend dependencies
         run: yarn install # This replaces your 'yarn install' step
