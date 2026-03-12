@@ -1,11 +1,13 @@
 use std::sync::Arc;
 
-use crate::{rpc::WalletRpcImpl, service::get_state, wallet::sync::SyncState};
-
-use super::error::RestError;
 use axum::extract::Path;
 use axum_extra::response::ErasedJson;
 use serde::Serialize;
+
+use super::error::RestError;
+use crate::rpc::WalletRpcImpl;
+use crate::service::get_state;
+use crate::wallet::sync::SyncState;
 
 #[derive(Debug, Serialize)]
 pub struct TransactionStatus {

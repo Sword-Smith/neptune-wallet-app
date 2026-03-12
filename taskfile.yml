@@ -16,7 +16,7 @@ tasks:
     platforms: [linux]
     cmds:
       - yarn tauri build --runner cargo-xwin --target x86_64-pc-windows-msvc
-  
+
   build-macos:
     platforms: [darwin]
     cmds:

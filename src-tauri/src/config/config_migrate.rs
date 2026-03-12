@@ -1,4 +1,7 @@
-use sqlx_migrator::{Info, Migrate, Migrator, Plan};
+use sqlx_migrator::Info;
+use sqlx_migrator::Migrate;
+use sqlx_migrator::Migrator;
+use sqlx_migrator::Plan;
 
 struct CreateConfigConfigMigration;
 

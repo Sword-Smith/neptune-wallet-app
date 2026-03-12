@@ -1,6 +1,6 @@
 .more {
-    cursor: pointer;
-    &:hover {
-        color: #0A8030; 
-    }
+  cursor: pointer;
+  &:hover {
+    color: #0a8030;
+  }
 }

@@ -164,13 +164,13 @@ impl WalletState {
         let _spend_guard = self.spend_lock.lock().await;
 
         debug!("check fork");
-        if let Some(fork_point) = self.check_fork(&block).await.context("check fork")? {
+        if let Some(fork_point) = self.check_fork(block).await.context("check fork")? {
             info!(
                 "reorganize_to_height: {} {}",
                 fork_point.0,
                 fork_point.1.to_hex()
             );
-            self.reorganize_to_height(&mut *tx, fork_point.0, fork_point.1)
+            self.reorganize_to_height(&mut tx, fork_point.0, fork_point.1)
                 .await
                 .context("reorganize_to_height")?;
             tx.commit().await.context("commit db")?;
@@ -186,7 +186,7 @@ impl WalletState {
         debug!("get removal_records");
 
         debug!("scan for incoming utxo");
-        let incommings = self.par_scan_for_incoming_utxo(&block).await?;
+        let incommings = self.par_scan_for_incoming_utxo(block).await?;
         let mut recovery_datas = Vec::with_capacity(incommings.len());
 
         let incoming = incommings
@@ -234,15 +234,15 @@ impl WalletState {
             db_datas.push(db_data);
         }
 
-        self.append_utxos(&mut *tx, db_datas).await?;
+        self.append_utxos(&mut tx, db_datas).await?;
 
         if let Some(key) = gusser_preimage {
             debug!("add guesser preimage to raw hash keys");
-            self.add_raw_hash_key(&mut *tx, key).await?;
+            self.add_raw_hash_key(&mut tx, key).await?;
         }
 
         debug!("scan for spent utxos");
-        let spents = self.scan_for_spent_utxos(&block).await?;
+        let spents = self.scan_for_spent_utxos(block).await?;
 
         let block_info = UtxoBlockInfo {
             block_height: block.kernel.header.height.into(),
@@ -256,7 +256,7 @@ impl WalletState {
             .collect_vec();
 
         debug!("update spent utxos");
-        self.update_spent_utxos(&mut *tx, spent_updates).await?;
+        self.update_spent_utxos(&mut tx, spent_updates).await?;
 
         debug!("scan for expected utxos");
         // update expected utxo with txid
@@ -271,7 +271,7 @@ impl WalletState {
             .collect_vec();
 
         debug!("update utxos with expected utxos");
-        self.update_utxos_with_expected_utxos(&mut *tx, expected, height.try_into()?)
+        self.update_utxos_with_expected_utxos(&mut tx, expected, height.try_into()?)
             .await?;
 
         debug!(
@@ -279,7 +279,7 @@ impl WalletState {
             block.kernel.header.height.value(),
             block.kernel.mast_hash().to_hex()
         );
-        self.set_tip(&mut *tx, (block.kernel.header.height.into(), block.hash()))
+        self.set_tip(&mut tx, (block.kernel.header.height.into(), block.hash()))
             .await?;
 
         tx.commit().await?;
@@ -287,7 +287,7 @@ impl WalletState {
         self.clean_old_expected_utxos().await?;
 
         if should_update {
-            self.updater.update_transactions(&self).await;
+            self.updater.update_transactions(self).await;
         }
 
         info!("sync finished: {}", height);
@@ -306,8 +306,8 @@ impl WalletState {
         });
 
         let spend_to_spendingkeys = spendingkeys.par_iter().flat_map(|spendingkey| {
-            let utxo = spendingkey.1.scan_for_announced_utxos(&transaction);
-            if utxo.len() > 0 {
+            let utxo = spendingkey.1.scan_for_announced_utxos(transaction);
+            if !utxo.is_empty() {
                 self.num_generation_spending_keys
                     .fetch_max(spendingkey.0, Ordering::SeqCst);
             }
@@ -323,8 +323,8 @@ impl WalletState {
         });
 
         let spend_to_symmetrickeys = symmetric_keys.par_iter().flat_map(|spendingkey| {
-            let utxo = spendingkey.1.scan_for_announced_utxos(&transaction);
-            if utxo.len() > 0 {
+            let utxo = spendingkey.1.scan_for_announced_utxos(transaction);
+            if !utxo.is_empty() {
                 self.num_symmetric_keys
                     .fetch_max(spendingkey.0, Ordering::SeqCst);
             }

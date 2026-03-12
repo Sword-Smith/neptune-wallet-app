@@ -1,7 +1,13 @@
-use std::path::PathBuf;
+use std::path::Path;
 
-use sqlx::{Column, Row, SqlitePool, TypeInfo};
-use sqlx_migrator::{Info, Migrate, Migrator, Plan};
+use sqlx::Column;
+use sqlx::Row;
+use sqlx::SqlitePool;
+use sqlx::TypeInfo;
+use sqlx_migrator::Info;
+use sqlx_migrator::Migrate;
+use sqlx_migrator::Migrator;
+use sqlx_migrator::Plan;
 
 struct CreateContactsMigration;
 
@@ -52,7 +58,7 @@ pub struct PersisStore {
 }
 
 impl PersisStore {
-    pub async fn new(data_dir: &PathBuf) -> anyhow::Result<Self> {
+    pub async fn new(data_dir: &Path) -> anyhow::Result<Self> {
         let db_path = data_dir.join("store.db");
 
         let options = sqlx::sqlite::SqliteConnectOptions::new()

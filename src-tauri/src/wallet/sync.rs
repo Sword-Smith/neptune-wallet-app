@@ -51,7 +51,7 @@ static LAST_SYNC_EVENT_TIME: AtomicU64 = AtomicU64::new(0);
 
 impl SyncState {
     pub async fn new(config: &Config) -> Result<Self> {
-        let wallet = WalletState::new_from_config(&config).await?;
+        let wallet = WalletState::new_from_config(config).await?;
         let data_dir = config.get_data_dir().await?;
         let snapshot_reader = match SnapshotReader::new(&data_dir).await {
             Ok(v) => {
@@ -89,11 +89,11 @@ impl SyncState {
     }
 
     pub async fn status(&self) -> SyncStatus {
-        return SyncStatus {
+        SyncStatus {
             height: self.height.load(Ordering::SeqCst),
             syncing: self.syncing.load(Ordering::SeqCst) != 0,
             updated_to_tip: self.updated_to_tip.load(Ordering::SeqCst) != 0,
-        };
+        }
     }
 
     pub async fn reset_to_height(&self, height: u64) -> Result<()> {
@@ -134,16 +134,9 @@ impl SyncState {
     pub async fn sync(self: Arc<Self>) {
         let self_clone = self.clone();
         let task = tokio::spawn(async move {
-            loop {
-                match self_clone.sync_inner().await {
-                    Err(e) => {
-                        error!("sync error: {:?}", e);
-                        tokio::time::sleep(Duration::from_secs(5)).await;
-                    }
-                    Ok(_) => {
-                        break;
-                    }
-                }
+            while let Err(e) = self_clone.sync_inner().await {
+                error!("sync error: {:?}", e);
+                tokio::time::sleep(Duration::from_secs(5)).await;
             }
         });
 
@@ -245,7 +238,7 @@ impl SyncState {
         let current_height = self.height.load(Ordering::Relaxed);
         info!("syncing block {current_height}");
 
-        if current_height > 0 && (current_height - 1) % SYNC_BLOCK_BATCH_SIZE == 0 {
+        if current_height > 0 && (current_height - 1).is_multiple_of(SYNC_BLOCK_BATCH_SIZE) {
             debug!("prepare blocks: {}", current_height);
             self.fake_archival_state
                 .prepare(current_height, SYNC_BLOCK_BATCH_SIZE)
@@ -291,18 +284,17 @@ impl SyncState {
         debug!("update wallet state with new block: {}", current_height);
 
         let mut should_update = self.updated_to_tip.load(Ordering::Relaxed) == 1;
-        if should_update {
-            if (Timestamp::now() - current_block.kernel.header.timestamp).as_duration()
+        if should_update
+            && (Timestamp::now() - current_block.kernel.header.timestamp).as_duration()
                 > Duration::from_secs(26 * 60)
-            {
-                should_update = false
-            }
+        {
+            should_update = false
         }
 
         if let Some(fork) = self
             .wallet
             .update_new_tip(
-                &previous_mutator_set_accumulator,
+                previous_mutator_set_accumulator,
                 &current_block,
                 should_update,
             )

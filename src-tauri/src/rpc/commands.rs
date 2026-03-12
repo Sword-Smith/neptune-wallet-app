@@ -4,16 +4,22 @@ use std::sync::Arc;
 use tracing::*;
 
 use super::tls;
-use crate::command::{Result, TauriCommandResultExt};
+use crate::command::Result;
+use crate::command::TauriCommandResultExt;
 use crate::config::Config;
 use crate::rpc::block::BlockInfoRpc;
 use crate::rpc::error::RestError;
-use crate::rpc::transaction_status::{TransactionStatus, TransactionStatusRpc};
-use crate::rpc::{
-    SendResponse, SendToAddressParams, Utxo, WalletBalance, WalletRpc, WalletRpcImpl,
-};
+use crate::rpc::transaction_status::TransactionStatus;
+use crate::rpc::transaction_status::TransactionStatusRpc;
+use crate::rpc::SendResponse;
+use crate::rpc::SendToAddressParams;
+use crate::rpc::Utxo;
+use crate::rpc::WalletBalance;
+use crate::rpc::WalletRpc;
+use crate::rpc::WalletRpcImpl;
 use crate::wallet::balance::WalletHistory;
-use crate::wallet::sync::{SyncState, SyncStatus};
+use crate::wallet::sync::SyncState;
+use crate::wallet::sync::SyncStatus;
 
 #[cfg_attr(feature = "gui", tauri::command)]
 #[cfg_attr(not(feature = "gui"), allow(unused))]
@@ -34,7 +40,7 @@ pub async fn get_token() -> Result<String> {
     let config = crate::service::get_state::<Arc<Config>>();
     let sk = config.get_secret_key().await.into_tauri_result()?;
     let public = tls::get_p256_pubkey(&sk);
-    return Ok(hex::encode(public));
+    Ok(hex::encode(public))
 }
 
 #[cfg_attr(feature = "gui", tauri::command)]

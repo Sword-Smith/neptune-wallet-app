@@ -2,6 +2,7 @@ use std::collections::LinkedList;
 use std::io::Read;
 use std::io::Seek;
 use std::io::Write;
+use std::path::Path;
 use std::path::PathBuf;
 use std::range::Range;
 use std::str::FromStr;
@@ -60,8 +61,8 @@ pub struct PersistBlockCache {
 impl PersistBlockCache {
     const BLOCK_BATCH_SIZE: u64 = 2000;
     const BLOCK_FILE_EXT: &str = "block";
-    pub async fn new(data_dir: &PathBuf, network: Network, cache_size: usize) -> Result<Self> {
-        let block_dir = data_dir.join(format!("{}_block", network.to_string()));
+    pub async fn new(data_dir: &Path, network: Network, cache_size: usize) -> Result<Self> {
+        let block_dir = data_dir.join(format!("{}_block", network));
 
         if !block_dir.exists() {
             std::fs::create_dir_all(&block_dir)
@@ -141,7 +142,7 @@ impl PersistBlockCache {
     async fn find_block_by_digest(&self, digest: Digest) -> Result<Option<(i64, i64, i64)>> {
         let mut conn = self.pool.acquire().await?;
         let row = sqlx::query("SELECT height, pos, length FROM block_cache WHERE hash = ?")
-            .bind(&digest.to_hex())
+            .bind(digest.to_hex())
             .fetch_one(&mut *conn)
             .await;
 
@@ -187,7 +188,7 @@ impl PersistBlockCache {
             start: (batch_num * Self::BLOCK_BATCH_SIZE) as i64,
             end: ((batch_num + 1) * Self::BLOCK_BATCH_SIZE) as i64,
         };
-        let cache = Self::new(&network_dir.into(), network, 1).await?;
+        let cache = Self::new(network_dir, network, 1).await?;
 
         tokio::fs::remove_file(file)
             .await
@@ -215,12 +216,7 @@ impl PersistBlockCache {
             Network::TestnetMock,
             Network::Testnet(0),
         ]
-        .map(|network| {
-            (
-                network.to_string(),
-                format!("{}_blocks", network.to_string()),
-            )
-        });
+        .map(|network| (network.to_string(), format!("{}_blocks", network)));
 
         for (network, dir) in dirs {
             let path = PathBuf::from(data_dir).join(dir);
@@ -252,7 +248,7 @@ impl PersistBlockCache {
             }
         }
 
-        return Ok(files);
+        Ok(files)
     }
 }
 
@@ -460,11 +456,7 @@ impl BlockCacheImpl {
         BlockCacheImpl::Memory(MemoryBlockCache::new(cache_size))
     }
 
-    pub async fn new_persist(
-        data_dir: &PathBuf,
-        network: Network,
-        cache_size: usize,
-    ) -> Result<Self> {
+    pub async fn new_persist(data_dir: &Path, network: Network, cache_size: usize) -> Result<Self> {
         Ok(BlockCacheImpl::Persist(
             PersistBlockCache::new(data_dir, network, cache_size).await?,
         ))
@@ -494,7 +486,7 @@ fn decode_block(block_bytes: &[u8]) -> Result<ExportedBlock> {
     Ok(bincode::deserialize(&decoded)?)
 }
 
-static ZSTD_DICT: &'static [u8] = &[
+static ZSTD_DICT: &[u8] = &[
     55, 164, 48, 236, 7, 34, 148, 5, 9, 16, 16, 223, 48, 51, 51, 179, 119, 10, 51, 241, 120, 60,
     30, 143, 199, 227, 241, 120, 60, 207, 243, 188, 247, 212, 66, 65, 65, 65, 65, 65, 65, 65, 65,
     65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 161, 80, 40, 20, 10, 133,

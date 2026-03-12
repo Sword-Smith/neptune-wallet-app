@@ -1,10 +1,9 @@
-use std::{
-    any::{Any, TypeId},
-    collections::HashMap,
-    hash::BuildHasherDefault,
-    pin::Pin,
-    sync::Mutex,
-};
+use std::any::Any;
+use std::any::TypeId;
+use std::collections::HashMap;
+use std::hash::BuildHasherDefault;
+use std::pin::Pin;
+use std::sync::Mutex;
 
 /// A guard for a state value.
 ///

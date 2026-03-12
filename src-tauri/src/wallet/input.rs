@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use anyhow::bail;
 use anyhow::ensure;
 use anyhow::Context;
@@ -19,31 +21,32 @@ use super::wallet_state_table::UtxoDbData;
 use super::UtxoRecoveryData;
 use crate::rpc_client;
 
+#[derive(Default)]
 pub enum InputSelectionRule {
     Minimum,
     Maximum,
+    #[default]
     Oldest,
     Newest,
     Random,
 }
 
-impl Default for InputSelectionRule {
-    fn default() -> Self {
-        InputSelectionRule::Oldest
+impl FromStr for InputSelectionRule {
+    type Err = ();
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        match s {
+            "minimum" => Ok(InputSelectionRule::Minimum),
+            "maximum" => Ok(InputSelectionRule::Maximum),
+            "oldest" => Ok(InputSelectionRule::Oldest),
+            "newest" => Ok(InputSelectionRule::Newest),
+            "random" => Ok(InputSelectionRule::Random),
+            _ => Err(()),
+        }
     }
 }
 
 impl InputSelectionRule {
-    pub fn from_str(s: &str) -> Option<Self> {
-        match s {
-            "minimum" => Some(InputSelectionRule::Minimum),
-            "maximum" => Some(InputSelectionRule::Maximum),
-            "oldest" => Some(InputSelectionRule::Oldest),
-            "newest" => Some(InputSelectionRule::Newest),
-            "random" => Some(InputSelectionRule::Random),
-            _ => None,
-        }
-    }
     pub fn apply(&self, mut utxos: Vec<UtxoDbData>) -> Vec<UtxoDbData> {
         match self {
             InputSelectionRule::Minimum => utxos.sort_by(|a, b| {
@@ -58,11 +61,9 @@ impl InputSelectionRule {
                     .get_native_currency_amount()
                     .cmp(&a.recovery_data.utxo.get_native_currency_amount())
             }),
-            InputSelectionRule::Oldest => {
-                utxos.sort_by(|a, b| a.confirm_height.cmp(&b.confirm_height))
-            }
+            InputSelectionRule::Oldest => utxos.sort_by_key(|a| a.confirm_height),
             InputSelectionRule::Newest => {
-                utxos.sort_by(|a, b| b.confirm_height.cmp(&a.confirm_height))
+                utxos.sort_by_key(|x| std::cmp::Reverse(x.confirm_height))
             }
             InputSelectionRule::Random => utxos.shuffle(&mut rand::rng()),
         };
@@ -200,7 +201,7 @@ impl super::WalletState {
                 Ok(msmp) => msmp,
                 Err(err) => bail!(
                     "Server returned bad mutator set membership proof recovery data: {}",
-                    err.to_string()
+                    err
                 ),
             };
 

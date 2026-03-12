@@ -1,8 +1,9 @@
+use aes_gcm::aead::Aead;
+use aes_gcm::aead::Nonce;
 use aes_gcm::aead::OsRng;
-use aes_gcm::{
-    aead::{Aead, Nonce},
-    AeadCore, Aes256Gcm, KeyInit,
-};
+use aes_gcm::AeadCore;
+use aes_gcm::Aes256Gcm;
+use aes_gcm::KeyInit;
 use anyhow::Result;
 
 pub fn aes_decode(key: &[u8], cipher_text: &[u8]) -> Result<Vec<u8>> {
@@ -21,7 +22,7 @@ pub fn aes_decode(key: &[u8], cipher_text: &[u8]) -> Result<Vec<u8>> {
 }
 
 pub fn aes_encode(key: &[u8], plaintext: &[u8]) -> Result<Vec<u8>> {
-    let cipher = Aes256Gcm::new_from_slice(&key)?;
+    let cipher = Aes256Gcm::new_from_slice(key)?;
     let nonce = Aes256Gcm::generate_nonce(&mut OsRng);
     let cipher_text = cipher
         .encrypt(&nonce, plaintext)

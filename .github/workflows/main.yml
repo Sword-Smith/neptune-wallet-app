@@ -1,0 +1,78 @@
+name: "CI: Lint & Test"
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos-latest, ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "yarn"
+
+      - name: install Rust Nightly
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          toolchain: nightly
+          components: clippy, rustfmt
+
+      - name: rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: ./src-tauri -> target
+
+      - name: install dependencies (ubuntu only)
+        if: matrix.platform == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev build-essential mold
+
+      - name: install frontend dependencies
+        run: yarn install
+
+      - name: frontend lint (Prettier)
+        # Only run on one OS to save time
+        if: matrix.platform == 'ubuntu-latest'
+        run: yarn lint
+
+      - name: rust fmt
+        # Only run on one OS to save time
+        if: matrix.platform == 'ubuntu-latest'
+        run: cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
+
+      - name: rust clippy
+        run: cargo clippy --manifest-path src-tauri/Cargo.toml -- -D warnings
+        env:
+          # Increase stack size to 16MB for Windows to prevent triton-vm overflow
+          # Use faster linker on Linux
+          RUSTFLAGS: ${{ matrix.platform == 'windows-latest' && '-C link-args=/STACK:16777216' ||
+            (matrix.platform == 'ubuntu-latest' && '-C link-arg=-fuse-ld=mold' || '') }}
+
+      - name:
+          rust test
+          # Skipped tests:
+          # test_snapshot_write_read: Requires local running instance of neptune-core
+        run: >
+          cargo test
+          --manifest-path src-tauri/Cargo.toml
+          --
+          --skip test_snapshot_write_read
+        env:
+          RUSTFLAGS: ${{ matrix.platform == 'ubuntu-latest' && '-C link-arg=-fuse-ld=mold' || '' }}

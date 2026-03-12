@@ -4,14 +4,15 @@ use aes_gcm::aead::OsRng;
 use anyhow::Result;
 use hkdf::Hkdf;
 use p256::elliptic_curve::ScalarPrimitive;
-use sha2::{Digest, Sha256};
+use sha2::Digest;
+use sha2::Sha256;
 
 #[allow(unused)]
 pub fn generate_p256_shared_secret(
     server_public_key: &[u8],
     client_secret: &[u8],
 ) -> Result<Vec<u8>> {
-    let secret = p256::SecretKey::from_slice(&client_secret)?;
+    let secret = p256::SecretKey::from_slice(client_secret)?;
     let pubkey = p256::PublicKey::from_sec1_bytes(server_public_key)?;
     let shared = p256::ecdh::diffie_hellman(secret.to_nonzero_scalar(), pubkey.as_affine());
     Ok(shared.raw_secret_bytes().to_vec())

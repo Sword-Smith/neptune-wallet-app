@@ -1,5 +1,6 @@
 use axum::http::StatusCode;
-use axum::response::{IntoResponse, Response};
+use axum::response::IntoResponse;
+use axum::response::Response;
 
 /// An enum of error handlers for the REST API server.
 #[derive(Debug)]
@@ -21,8 +22,8 @@ impl From<anyhow::Error> for RestError {
     }
 }
 
-impl Into<String> for RestError {
-    fn into(self) -> String {
-        self.0
+impl From<RestError> for String {
+    fn from(val: RestError) -> Self {
+        val.0
     }
 }

@@ -1,4 +1,5 @@
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 #[cfg(feature = "gui")]
 use tauri::Emitter;
 #[cfg(all(feature = "gui", desktop))]

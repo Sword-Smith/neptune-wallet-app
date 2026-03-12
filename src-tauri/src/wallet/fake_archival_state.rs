@@ -3,6 +3,7 @@ use std::collections::LinkedList;
 use std::io::Read;
 use std::io::SeekFrom;
 use std::io::Write;
+use std::path::Path;
 use std::path::PathBuf;
 use std::range::Range;
 use std::sync::Arc;
@@ -104,9 +105,9 @@ impl FakeArchivalState {
             "get_block_by_digest: requesting block {} from rest server",
             digest.to_hex()
         );
-        Ok(rpc_client::node_rpc_client()
+        rpc_client::node_rpc_client()
             .request_block_by_digest(&digest.to_hex())
-            .await?)
+            .await
     }
 
     pub async fn reset_to_height(&self, height: u64) -> Result<()> {
@@ -153,7 +154,7 @@ impl SnapshotNetwork {
             Network::Main => 0,
             Network::TestnetMock => 1,
             Network::RegTest => 2,
-            Network::Testnet(i) => i as u8 + 3,
+            Network::Testnet(i) => i + 3,
             _ => todo!(),
         }
     }
@@ -253,13 +254,10 @@ impl SnapshotMetadata {
 }
 
 // [size][vec<block_pos>][0][vec[block]]
-pub async fn generate_snapshot(dir: &PathBuf, network: Network, range: Range<u64>) -> Result<()> {
+pub async fn generate_snapshot(dir: &Path, network: Network, range: Range<u64>) -> Result<()> {
     let path = dir.join(format!(
         "neptune_{}_{}-{}.{}",
-        network.to_string(),
-        range.start,
-        range.end,
-        SNAPSHOT_EXT
+        network, range.start, range.end, SNAPSHOT_EXT
     ));
 
     let size = (range.end - range.start) as usize;
@@ -268,7 +266,7 @@ pub async fn generate_snapshot(dir: &PathBuf, network: Network, range: Range<u64
 
     let metadata = SnapshotMetadata {
         path: path.clone(),
-        range: range.clone(),
+        range,
         network: SnapshotNetwork(network),
     };
 
@@ -310,8 +308,8 @@ pub async fn generate_snapshot(dir: &PathBuf, network: Network, range: Range<u64
         let pos = file.stream_position().await?;
         let mut buffer = vec![];
         let mut encoder = zstd::Encoder::with_dictionary(&mut buffer, 17, &dict)?;
-        encoder.write_all(&blocks[cursor..cursor + block_size as usize])?;
-        cursor += block_size as usize;
+        encoder.write_all(&blocks[cursor..cursor + block_size])?;
+        cursor += block_size;
         encoder.finish()?;
         let size = buffer.len() as u64;
         file.write_all(&buffer).await?;
@@ -365,7 +363,7 @@ impl SnapshotReader {
                     range,
                     metadata.path.file_name().unwrap().to_string_lossy()
                 );
-                match Self::read_block_from_snapshot(&metadata, range).await {
+                match Self::read_block_from_snapshot(metadata, range).await {
                     Ok(b) => return Some(b),
                     Err(e) => {
                         warn!(
@@ -400,7 +398,7 @@ impl SnapshotReader {
             let block = Self::read_compressed_block(&mut file, dict.clone(), height).await?;
             blocks.push(block);
         }
-        return Ok(blocks);
+        Ok(blocks)
     }
 
     async fn block_position(file: &mut File, height: u64) -> Result<BlockPosition> {

@@ -46,7 +46,7 @@ pub async fn set_remote_rest(rest: String) -> Result<()> {
 #[cfg_attr(not(feature = "gui"), allow(unused))]
 pub async fn get_remote_rest() -> Result<String> {
     let config = crate::service::get_state::<Arc<Config>>();
-    Ok(config.get_remote_rest().await.into_tauri_result()?)
+    config.get_remote_rest().await.into_tauri_result()
 }
 
 #[cfg_attr(feature = "gui", tauri::command)]
@@ -81,7 +81,7 @@ pub async fn set_disk_cache(enabled: bool) -> Result<()> {
 #[cfg_attr(not(feature = "gui"), allow(unused))]
 pub async fn get_disk_cache() -> Result<bool> {
     let config = crate::service::get_state::<Arc<Config>>();
-    Ok(config.get_disk_cache().await.into_tauri_result()?)
+    config.get_disk_cache().await.into_tauri_result()
 }
 
 #[cfg_attr(feature = "gui", tauri::command)]
@@ -185,7 +185,7 @@ pub async fn set_wallet_id(id: i64) -> Result<()> {
 #[cfg_attr(not(feature = "gui"), allow(unused))]
 pub async fn wallet_address(index: u64) -> Result<String> {
     let state = crate::service::get_state::<Arc<SyncState>>();
-    Ok(state.wallet.get_address(index).await.into_tauri_result()?)
+    state.wallet.get_address(index).await.into_tauri_result()
 }
 
 #[cfg_attr(feature = "gui", tauri::command)]
@@ -255,7 +255,7 @@ pub async fn generate_snapshot_file(
 
     let path = &PathBuf::from(path);
 
-    generate_snapshot(&path, network, (start_height..end_height).into())
+    generate_snapshot(path, network, (start_height..end_height).into())
         .await
         .into_tauri_result()?;
 
@@ -275,7 +275,7 @@ pub async fn list_cache() -> Result<Vec<BlockCacheFile>> {
         if file.network == network.to_string() && file.range.1 > sync_state.height as i64 {
             return false;
         }
-        return true;
+        true
     });
 
     Ok(files)

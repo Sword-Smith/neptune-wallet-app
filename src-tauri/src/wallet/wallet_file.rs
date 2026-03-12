@@ -1,3 +1,4 @@
+use std::path::Path;
 use std::path::PathBuf;
 
 use anyhow::Result;
@@ -7,7 +8,7 @@ use tracing::*;
 use super::WalletState;
 use crate::config::Config;
 
-pub fn wallet_dir_by_id(data_dir: &PathBuf, network: Network, wallet_id: i64) -> PathBuf {
+pub fn wallet_dir_by_id(data_dir: &Path, network: Network, wallet_id: i64) -> PathBuf {
     data_dir
         .join(network.to_string())
         .join(format!("wallet_{}", wallet_id))

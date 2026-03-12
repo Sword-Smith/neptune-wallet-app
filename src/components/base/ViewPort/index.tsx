@@ -12,7 +12,7 @@ export const ViewPort = () => {
   const { hasAuth } = useAuth();
   if (!hasAuth) {
     return <LockPage />;
-  }  
+  }
   return (
     <Suspense fallback={<LoadingPage />}>
       <AppShell
@@ -20,16 +20,15 @@ export const ViewPort = () => {
         header={{ height: 0 }}
         navbar={{
           width: 170,
-          breakpoint: 'sm', collapsed: { mobile: false }
-        }}>
-
+          breakpoint: "sm",
+          collapsed: { mobile: false },
+        }}
+      >
         <AppShell.Navbar visibleFrom="sm" style={{ backgroundColor: "transparent" }}>
           <Navbar />
         </AppShell.Navbar>
-        <AppShell.Main style={{ "width": "100%" }}>
-          {routes}
-        </AppShell.Main>
+        <AppShell.Main style={{ width: "100%" }}>{routes}</AppShell.Main>
       </AppShell>
-    </Suspense >
+    </Suspense>
   );
 };

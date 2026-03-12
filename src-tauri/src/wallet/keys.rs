@@ -20,13 +20,13 @@ impl super::WalletState {
             start: 0,
             end: self.num_generation_spending_keys() + 1,
         });
-        let spending_keys = spending_keys.iter().map(|v| v.1.deref().clone());
+        let spending_keys = spending_keys.iter().map(|v| *v.1.deref());
 
         let symmetric_keys = self.get_future_symmetric_keys(Range {
             start: 0,
             end: self.num_symmetric_keys() + 1,
         });
-        let symmetric_keys = symmetric_keys.iter().map(|v| v.1.deref().clone());
+        let symmetric_keys = symmetric_keys.iter().map(|v| *v.1.deref());
 
         // let raw_hash_keys = self.get_known_raw_hash_keys();
 

@@ -1,20 +1,31 @@
-#[cfg(desktop)]
-use crate::rpc::commands::{get_server_url, stop_rpc_server};
-use crate::session_store::Memstore;
 use std::sync::Arc;
 
+#[cfg(desktop)]
+use tauri::image::Image;
+#[cfg(desktop)]
+use tauri::menu::MenuBuilder;
+#[cfg(desktop)]
+use tauri::menu::MenuItemBuilder;
+#[cfg(desktop)]
+use tauri::tray::MouseButton;
+#[cfg(desktop)]
+use tauri::tray::MouseButtonState;
+#[cfg(desktop)]
+use tauri::tray::TrayIconBuilder;
+#[cfg(desktop)]
+use tauri::tray::TrayIconEvent;
+#[cfg(desktop)]
+use tauri::App;
+#[cfg(desktop)]
+use tauri::Emitter;
+use tauri::Manager;
 use tracing::*;
 
-use tauri::Manager;
-
 #[cfg(desktop)]
-use tauri::{image::Image, App, Emitter};
-
+use crate::rpc::commands::get_server_url;
 #[cfg(desktop)]
-use tauri::{
-    menu::{MenuBuilder, MenuItemBuilder},
-    tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
-};
+use crate::rpc::commands::stop_rpc_server;
+use crate::session_store::Memstore;
 
 #[cfg(desktop)]
 const MENU_ITEM_QUIT: &str = "Quit";

@@ -4,7 +4,7 @@ fn main() {
     #[cfg(feature = "gui")]
     tauri_build::build();
     let output = Command::new("git")
-        .args(&["rev-parse", "--short", "HEAD"])
+        .args(["rev-parse", "--short", "HEAD"])
         .output()
         .expect("cant get git commit info");
 

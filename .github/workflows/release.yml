@@ -1,0 +1,95 @@
+name: "Release"
+
+# This task will run whenever you push a git tag that looks like a version
+# like "v1.0.0" or "v0.2.3-beta1"
+on:
+  pull_request:
+  push:
+    tags:
+      - 'v[0-9]+\.[0-9]+\.[0-9]+(-.+)?'
+
+# Cancel in-progress builds if you push a new tag fix quickly
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish-tauri:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: "macos-latest"
+            args: "--target universal-apple-darwin"
+          - platform: "ubuntu-latest"
+            args: "" # Builds standard .deb and .AppImage
+          - platform: "ubuntu-latest"
+            args: "--runner cargo-xwin --target x86_64-pc-windows-msvc"
+            windows_cross: true
+
+    runs-on: ${{ matrix.platform }}
+    env:
+      XWIN_CACHE_DIR: ${{ github.workspace }}/.xwin-cache # Path for Windows SDK cache
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24 # Node version 24 is latest LTS, at time of writing
+          cache: "yarn"
+
+      - name: install Rust nightly
+        uses: dtolnay/rust-toolchain@nightly
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2 # ⚡️ RUST CACHE
+        with:
+          workspaces: ./src-tauri -> target
+
+      - name: add macOS targets
+        if: matrix.platform == 'macos-latest'
+        run: rustup target add aarch64-apple-darwin x86_64-apple-darwin
+
+      - name: install dependencies (ubuntu only)
+        if: matrix.platform == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev build-essential
+
+      # Windows Cross: Setup toolchain + SDK Cache
+      - name: Windows SDK cache
+        if: matrix.windows_cross
+        uses: actions/cache@v4 # ⚡️ WINDOWS SDK CACHE
+        with:
+          path: .xwin-cache
+          key: ${{ runner.os }}-xwin-${{ hashFiles('**/Cargo.toml') }}
+
+      - name: setup windows cross-build dependencies
+        if: matrix.windows_cross
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nsis lld llvm
+          rustup target add x86_64-pc-windows-msvc
+          cargo install cargo-xwin
+
+      - name: install frontend dependencies
+        run: yarn install # This replaces your 'yarn install' step
+
+      - name: build the app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # ⚡️ Use LLD for faster linking on Linux
+          RUSTFLAGS: ${{ matrix.platform == 'ubuntu-latest' && '-C link-arg=-fuse-ld=lld' || '' }}
+        with:
+          tagName: v__VERSION__ # This replaces __VERSION__ with the version in your tauri.conf.json
+          releaseName: "Neptune Wallet v__VERSION__"
+          releaseBody: "Automated release from GitHub Actions."
+          releaseDraft: true
+          prerelease: false
+          # Use existing Taskfile logic here
+          args: ${{ matrix.args }}
