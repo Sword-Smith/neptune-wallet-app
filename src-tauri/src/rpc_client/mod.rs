@@ -19,7 +19,7 @@ use tracing::info;
 static NODE_RPC_CLIENT: Lazy<NodeRpcClient> = Lazy::new(|| NodeRpcClient::new(""));
 
 pub fn node_rpc_client() -> &'static NodeRpcClient {
-    return &NODE_RPC_CLIENT;
+    &NODE_RPC_CLIENT
 }
 
 pub struct NodeRpcClient {
@@ -45,8 +45,7 @@ impl NodeRpcClient {
     }
 
     fn rest_server(&self) -> &str {
-        let url = unsafe { &*self.rest_server.load(Ordering::Relaxed) };
-        &url
+        (unsafe { &*self.rest_server.load(Ordering::Relaxed) }) as _
     }
 
     pub fn set_rest_server(&self, rest: String) {
@@ -91,11 +90,7 @@ impl NodeRpcClient {
 
     pub async fn get_block_info(&self, digest: &str) -> Result<Option<BlockInfo>> {
         let block = Self::get_client()
-            .get(format!(
-                "{}/rpc/block_info/{}",
-                self.rest_server(),
-                digest
-            ))
+            .get(format!("{}/rpc/block_info/{}", self.rest_server(), digest))
             .timeout(std::time::Duration::from_secs(15))
             .send()
             .await?

@@ -1,12 +1,15 @@
+use std::collections::VecDeque;
+use std::io::Write;
+use std::str::FromStr;
+use std::sync::Mutex;
+
 use once_cell::sync::OnceCell;
-use std::{collections::VecDeque, io::Write, str::FromStr, sync::Mutex};
-use tracing_subscriber::{
-    filter,
-    fmt::{self, MakeWriter},
-    layer::SubscriberExt,
-    reload,
-    util::SubscriberInitExt,
-};
+use tracing_subscriber::filter;
+use tracing_subscriber::fmt::MakeWriter;
+use tracing_subscriber::fmt::{self};
+use tracing_subscriber::layer::SubscriberExt;
+use tracing_subscriber::reload;
+use tracing_subscriber::util::SubscriberInitExt;
 
 #[cfg(feature = "gui")]
 use crate::config::Config;
@@ -115,6 +118,9 @@ pub fn set_log_level(level: &str) {
         tracing::error!("Failed to reload log handler: {}", e);
     };
     let config = crate::service::get_state::<std::sync::Arc<Config>>();
+
+    // TODO: No idea how to fix this problem.
+    #[expect(clippy::let_underscore_future)]
     let _ = config.set_log_level(level);
 }
 
@@ -131,7 +137,7 @@ pub fn get_log_level() -> String {
             .1
             .to_string();
     }
-    return "info".to_string();
+    "info".to_string()
 }
 
 #[cfg_attr(feature = "gui", tauri::command)]
@@ -143,6 +149,6 @@ pub fn log(level: &str, message: &str) {
         "info" => tracing::info!("{}", message),
         "warn" => tracing::warn!("{}", message),
         "error" => tracing::error!("{}", message),
-        _ => return,
-    };
+        _ => (),
+    }
 }

@@ -159,7 +159,7 @@ impl UtxoDbData {
             .bind(&self.hash)
             .bind(&data)
             .bind(&confirmed_in_block)
-            .bind(&self.confirm_height)
+            .bind(self.confirm_height)
             .execute(executor)
             .await?;
         Ok(())
@@ -224,7 +224,7 @@ impl ExpectedUtxoData {
         sqlx::query(query)
             .bind(&self.txid)
             .bind(&data)
-            .bind(&timestamp)
+            .bind(timestamp)
             .execute(executor)
             .await?;
         Ok(())
@@ -299,9 +299,9 @@ impl WalletState {
         }
     }
 
-    pub async fn set_tip<'c>(
+    pub async fn set_tip(
         &self,
-        tx: &'c mut SqliteConnection,
+        tx: &mut SqliteConnection,
         (height, digest): (u64, Digest),
     ) -> Result<()> {
         let tip = Tip { height, digest };
@@ -331,9 +331,9 @@ impl WalletState {
 
     pub async fn flush(&self) {}
 
-    pub async fn append_utxos<'c>(
+    pub async fn append_utxos(
         &self,
-        tx: &'c mut SqliteConnection,
+        tx: &mut SqliteConnection,
         utxos: Vec<UtxoDbData>,
     ) -> Result<()> {
         for utxo in utxos {
@@ -344,9 +344,9 @@ impl WalletState {
         Ok(())
     }
 
-    pub async fn update_spent_utxos<'c>(
+    pub async fn update_spent_utxos(
         &self,
-        tx: &'c mut SqliteConnection,
+        tx: &mut SqliteConnection,
         utxos: Vec<(i64, UtxoBlockInfo)>,
     ) -> Result<()> {
         for utxo in &utxos {
@@ -354,7 +354,7 @@ impl WalletState {
 
             sqlx::query::<Sqlite>("UPDATE wallet_state_utxos SET spent_in_block = ? WHERE id = ?")
                 .bind(&info)
-                .bind(&utxo.0)
+                .bind(utxo.0)
                 .execute(&mut *tx)
                 .await?;
         }
@@ -366,7 +366,7 @@ impl WalletState {
                 info!("removing pending tx {}", txid);
                 sqlx::query::<Sqlite>("UPDATE wallet_state_utxos SET spent_txid = ? WHERE id = ?")
                     .bind(&txid)
-                    .bind(&id)
+                    .bind(id)
                     .execute(&mut *tx)
                     .await?;
             };
@@ -375,9 +375,9 @@ impl WalletState {
         Ok(())
     }
 
-    pub async fn update_utxos_with_expected_utxos<'c>(
+    pub async fn update_utxos_with_expected_utxos(
         &self,
-        tx: &'c mut SqliteConnection,
+        tx: &mut SqliteConnection,
         utxos: Vec<(Digest, String)>,
         height: i64,
     ) -> Result<()> {
@@ -388,7 +388,7 @@ impl WalletState {
             )
             .bind(&txid)
             .bind(&hash)
-            .bind(&height)
+            .bind(height)
             .execute(&mut *tx)
             .await?;
         }
@@ -421,10 +421,10 @@ impl WalletState {
         match row {
             Ok(row) => {
                 let data: UtxoDbData = UtxoDbData::from_row(row)?;
-                return Ok(Some(data));
+                Ok(Some(data))
             }
-            Err(sqlx::Error::RowNotFound) => return Ok(None),
-            Err(err) => return Err(err.into()),
+            Err(sqlx::Error::RowNotFound) => Ok(None),
+            Err(err) => Err(err.into()),
         }
     }
 
@@ -451,7 +451,7 @@ impl WalletState {
             let row = sqlx::query(
                 "SELECT * FROM wallet_state_utxos WHERE spent_in_block IS NULL AND id = ?",
             )
-            .bind(&id)
+            .bind(id)
             .fetch_one(&mut *conn)
             .await?;
             let utxo = UtxoDbData::from_row(row)?;
@@ -519,18 +519,14 @@ impl WalletState {
         let begin = now - (2 * 60 * 60);
         let begin: i64 = begin.try_into()?;
         sqlx::query("DELETE FROM wallet_state_expected_utxos WHERE timestamp < ?")
-            .bind(&begin)
+            .bind(begin)
             .execute(&mut *conn)
             .await?;
         Ok(())
     }
 
     //  add raw hash key; NOTE: this is unsafe, should only be called when syncing blocks
-    pub async fn add_raw_hash_key<'c>(
-        &self,
-        tx: &'c mut SqliteConnection,
-        key: Digest,
-    ) -> Result<()> {
+    pub async fn add_raw_hash_key(&self, tx: &mut SqliteConnection, key: Digest) -> Result<()> {
         let key_hex = key.to_hex();
         sqlx::query(
             "INSERT INTO wallet_state_raw_hash_keys (key) VALUES (?) ON CONFLICT DO NOTHING",
@@ -560,7 +556,7 @@ impl WalletState {
             .await?;
         let mut keys: Vec<Digest> = Vec::with_capacity(rows.len());
         for row in rows {
-            let key = Digest::try_from_hex(&row.get::<String, _>("key"))?;
+            let key = Digest::try_from_hex(row.get::<String, _>("key"))?;
             keys.push(key);
         }
 
@@ -571,16 +567,16 @@ impl WalletState {
     }
 
     // reorganize to the fork point
-    pub async fn reorganize_to_height<'c>(
+    pub async fn reorganize_to_height(
         &self,
-        tx: &'c mut SqliteConnection,
+        tx: &mut SqliteConnection,
         height: u64,
         digest: Digest,
     ) -> Result<()> {
         let height_i64 = height as i64;
 
         let ids = sqlx::query("SELECT id FROM wallet_state_utxos WHERE confirm_height > ?")
-            .bind(&height_i64)
+            .bind(height_i64)
             .fetch_all(&mut *tx)
             .await?
             .into_iter()
@@ -592,12 +588,12 @@ impl WalletState {
             .await?;
 
         sqlx::query("DELETE FROM wallet_state_utxos WHERE confirm_height > ?")
-            .bind(&height_i64)
+            .bind(height_i64)
             .execute(&mut *tx)
             .await?;
 
         sqlx::query("UPDATE wallet_state_utxos SET spent_height = NULL, spent_txid = NULL, spent_in_block = NULL WHERE spent_height > ?")
-            .bind(&height_i64)
+            .bind(height_i64)
             .execute(&mut *tx)
             .await?;
 

@@ -4,9 +4,7 @@ use os_info::Version::Semantic;
 #[cfg_attr(feature = "gui", tauri::command)]
 #[cfg(feature = "gui")]
 pub fn os_info() -> os_info::Info {
-    let info = os_info::get();
-
-    info
+    os_info::get()
 
     // // Print full information:
     // println!("OS information: {info}");
@@ -43,5 +41,5 @@ pub fn is_win11() -> bool {
         };
     }
 
-    return false;
+    false
 }

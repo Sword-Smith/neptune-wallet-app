@@ -1,8 +1,8 @@
 import { useAppSelector } from "@/store/hooks";
 
 export const useLoadingContacts = () => {
-    return useAppSelector(state => state.contact.loadingContacts);
-}
+  return useAppSelector((state) => state.contact.loadingContacts);
+};
 export const useAllContacts = () => {
-    return useAppSelector(state => state.contact.contacts);
-} 
+  return useAppSelector((state) => state.contact.contacts);
+};

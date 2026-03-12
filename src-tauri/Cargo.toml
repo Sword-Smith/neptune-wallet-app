@@ -5,7 +5,7 @@ resolver = "2"
 [package]
 name = "neptune-wallet"
 version = "2.2.0"
-description = "A Tauri App"
+description = "A light weight wallet for Neptune Cash"
 authors = ["you"]
 edition = "2021"
 
@@ -98,6 +98,16 @@ debug = false
 incremental = false
 debug-assertions = false
 overflow-checks = false
+
+# Optimize heavy dependencies even in debug mode to prevent stack overflows
+[profile.dev.package.triton-vm]
+opt-level = 1
+
+[profile.dev.package.twenty-first] # Dependency of triton-vm
+opt-level = 1
+
+[profile.dev.build-override]
+opt-level = 2
 
 [profile.release]
 panic = "abort"

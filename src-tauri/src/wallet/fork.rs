@@ -51,6 +51,6 @@ impl super::WalletState {
                 }
             }
         }
-        return Ok(None);
+        Ok(None)
     }
 }

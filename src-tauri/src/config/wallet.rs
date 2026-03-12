@@ -16,7 +16,7 @@ impl Config {
         let id = self.get_wallet_id().await?;
 
         let row = sqlx::query("select id,secret_key,scan_config from wallets where id = ?")
-            .bind(&id)
+            .bind(id)
             .fetch_one(&mut *conn)
             .await?;
 
@@ -44,7 +44,7 @@ impl Config {
         let mut conn = self.db.acquire().await?;
 
         let row = sqlx::query("select secret_key from wallets where id = ?")
-            .bind(&id)
+            .bind(id)
             .fetch_one(&mut *conn)
             .await?;
 
@@ -71,11 +71,11 @@ impl Config {
         let res =  sqlx::query(
             "INSERT INTO wallets (name, secret_key, scan_config, address, balance) VALUES (?,?,?,?,?)",
         )
-        .bind(&name)
+        .bind(name)
         .bind(&secret)
         .bind(&scan_config)
         .bind(&address)
-        .bind(&"".to_string())
+        .bind("".to_string())
         .execute(&mut *conn)
         .await?;
 
@@ -85,7 +85,7 @@ impl Config {
     pub async fn remove_wallet(&self, id: i64) -> Result<()> {
         let mut conn = self.db.acquire().await?;
         sqlx::query("delete from wallets where id = ?")
-            .bind(&id)
+            .bind(id)
             .execute(&mut *conn)
             .await?;
         Ok(())
@@ -118,7 +118,7 @@ impl Config {
         let mut conn = self.db.acquire().await?;
         sqlx::query("update wallets set balance = ? where id = ?")
             .bind(&balance)
-            .bind(&id)
+            .bind(id)
             .execute(&mut *conn)
             .await?;
         Ok(())
@@ -127,7 +127,7 @@ impl Config {
     pub async fn mnemonic_to_secret(&self, mnemonic: Vec<String>) -> Result<Vec<u8>> {
         let phase = mnemonic.join(" ");
         let encoded =
-            crate::rpc::tls::aes::aes_encode(&self.decrypt_key.lock().await, &phase.as_bytes())?;
+            crate::rpc::tls::aes::aes_encode(&self.decrypt_key.lock().await, phase.as_bytes())?;
         Ok(encoded)
     }
 

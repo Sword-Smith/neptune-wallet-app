@@ -98,7 +98,7 @@ impl TransactionUpdater {
             }
         };
 
-        let transactions = match self.get_pending_transactions(&mut *tx).await {
+        let transactions = match self.get_pending_transactions(&mut tx).await {
             Ok(transactions) => transactions,
             Err(err) => {
                 error!("Error getting pending transactions: {}", err);
@@ -200,7 +200,7 @@ impl TransactionUpdater {
         for utxo_id in input_ids {
             sqlx::query("INSERT INTO wallet_state_pending_ids (txid, utxo_id) VALUES (?, ?)")
                 .bind(&tx_id)
-                .bind(&utxo_id)
+                .bind(utxo_id)
                 .execute(&mut *conn)
                 .await?;
         }
@@ -223,9 +223,9 @@ impl TransactionUpdater {
         Ok(())
     }
 
-    pub async fn get_pending_transactions<'c>(
+    pub async fn get_pending_transactions(
         &self,
-        tx: &'c mut SqliteConnection,
+        tx: &mut SqliteConnection,
     ) -> Result<Vec<(String, TransactionDetails, Vec<i64>)>> {
         let rows = sqlx::query("SELECT * FROM wallet_state_pending WHERE finished = 0")
             .fetch_all(&mut *tx)
@@ -297,9 +297,9 @@ impl TransactionUpdater {
     }
 
     // remove pending and returns transaction id
-    pub async fn try_remove_pending_by_utxo_id<'c>(
+    pub async fn try_remove_pending_by_utxo_id(
         &self,
-        tx: &'c mut SqliteConnection,
+        tx: &mut SqliteConnection,
         id: i64,
     ) -> Result<Option<String>> {
         let txids = sqlx::query("SELECT txid FROM wallet_state_pending_ids WHERE utxo_id = ?")
@@ -327,9 +327,9 @@ impl TransactionUpdater {
         Ok(remove)
     }
 
-    pub async fn try_clean_pending_by_utxo<'c>(
+    pub async fn try_clean_pending_by_utxo(
         &self,
-        tx: &'c mut SqliteConnection,
+        tx: &mut SqliteConnection,
         utxoid: Vec<i64>,
     ) -> Result<()> {
         let transactions = match self.get_pending_transactions(&mut *tx).await {

@@ -38,8 +38,7 @@ impl super::ProofBuilder {
     ) -> Result<Transaction> {
         let proof_collection = match &transaction.proof {
             TransactionProof::Witness(primitive_witness) => {
-                let proof_collection = Self::produce_proof_collection(&primitive_witness)?;
-                proof_collection
+                Self::produce_proof_collection(primitive_witness)?
             }
             TransactionProof::SingleProof(_) => bail!("single proof do not need upgrade"),
             TransactionProof::ProofCollection(proof_collection) => proof_collection.clone(),

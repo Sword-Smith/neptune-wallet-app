@@ -33,7 +33,7 @@ const PASSWORD_TEST: &str = "hello world!";
 const PASSWORD_TEST_KEY: &str = "password_test";
 impl Config {
     pub async fn new(data_dir: &PathBuf) -> Result<Self> {
-        DataDirectory::create_dir_if_not_exists(&data_dir).await?;
+        DataDirectory::create_dir_if_not_exists(data_dir).await?;
         let db_path = data_dir.join("config.db");
 
         let options = sqlx::sqlite::SqliteConnectOptions::new()
@@ -112,7 +112,7 @@ impl Config {
 
     pub async fn get_network(&self) -> Result<Network> {
         if let Some(n) = self.get_data::<String>("network").await? {
-            return Ok(Network::from_str(&n).map_err(|e| anyhow!("{}", e))?);
+            return Network::from_str(&n).map_err(|e| anyhow!("{}", e));
         }
         Ok(Network::Main)
     }
@@ -138,7 +138,7 @@ impl Config {
     }
     pub async fn set_remote_rest(&self, rest: &String) -> Result<()> {
         let key = self.remote_rest_key().await?;
-        self.set_data::<String>(key, &rest).await
+        self.set_data::<String>(key, rest).await
     }
 
     pub async fn get_remote_rest(&self) -> Result<String> {
@@ -227,7 +227,7 @@ impl Config {
 
         match self.password.lock().await.as_ref() {
             Some(v) => {
-                if v == "" {
+                if v.is_empty() {
                     self.set_data::<Vec<u8>>("secret_key", &secret_key)
                         .await
                         .context("cant write to db")?;
@@ -265,12 +265,12 @@ impl Config {
             .ok_or(anyhow!("no password set!"))?
             .as_str()
         {
-            "" => return Ok(value),
+            "" => Ok(value),
             str => {
                 let encrypt_key = hash(str);
                 let decrypted =
                     tls::aes::aes_decode(&encrypt_key, &value).context("decode secret key")?;
-                return Ok(decrypted);
+                Ok(decrypted)
             }
         }
     }

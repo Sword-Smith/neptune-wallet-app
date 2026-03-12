@@ -1,6 +1,7 @@
 use std::net::Ipv4Addr;
 use std::net::SocketAddr;
 use std::net::SocketAddrV4;
+use std::str::FromStr;
 use std::sync::Arc;
 
 use anyhow::anyhow;
@@ -166,7 +167,9 @@ pub trait WalletRpc {
         let fee = NativeCurrencyAmount::coins_from_str(&params.fee)?;
 
         let rule = if let Some(input_rule) = params.input_rule {
-            InputSelectionRule::from_str(&input_rule).unwrap_or_default()
+            InputSelectionRule::from_str(&input_rule)
+                .ok()
+                .unwrap_or_default()
         } else {
             InputSelectionRule::default()
         };
@@ -248,7 +251,7 @@ pub async fn start_rpc_server() -> Result<(), anyhow::Error> {
     let mut rpc_handler = RPC_CLOSER.lock().await;
     rpc_handler.replace(RpcHandler {
         closer: tx,
-        handler: handler,
+        handler,
     });
 
     Ok(())

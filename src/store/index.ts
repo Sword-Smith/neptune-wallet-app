@@ -11,17 +11,17 @@ import executionSlice from "./execution/execution-slice";
 import contactSlice from "./contact/contact-slice";
 
 export const store = configureStore({
-    reducer: {
-        wallet: walletSlice,
-        about: aboutSlice,
-        history: historySlice,
-        settings: settingsSlice,
-        auth: authSlice,
-        log: logSlice,
-        sync: syncSlice,
-        execution: executionSlice,
-        contact: contactSlice
-    }
+  reducer: {
+    wallet: walletSlice,
+    about: aboutSlice,
+    history: historySlice,
+    settings: settingsSlice,
+    auth: authSlice,
+    log: logSlice,
+    sync: syncSlice,
+    execution: executionSlice,
+    contact: contactSlice,
+  },
 });
 
 export type RootState = ReturnType<typeof store.getState>;

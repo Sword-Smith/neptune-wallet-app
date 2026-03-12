@@ -34,6 +34,6 @@ impl ProofBuilder {
         let proof = prove(default_stark, &claim, program, non_determinism)?;
         info!("triton-vm: completed proof");
 
-        Ok(proof.into())
+        Ok(proof)
     }
 }

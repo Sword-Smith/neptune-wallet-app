@@ -1,28 +1,10 @@
-# vxb neptune wallet
+# Vxb neptune wallet
 
 vxb neptune wallet is a cross-platform wallet for [neptunecash](https://github.com/Neptune-Crypto/neptune-core).
-
-## Download
-
-You can get compiled installer and docs here: <https://github.com/VxBlocks/vxb_neptune_wallet>
 
 ## Development
 
 Refer to [neptune-wallet-core](https://github.com/VxBlocks/neptune-wallet-core) for server side source code. or read [self hosted server](#self-hosted-server) to run self hosted server.
-
-### Prerequisites
-
-1. System Dependencies
-    - Linux
-    - macOS Catalina (10.15) and later
-    - Windows 7 and later
-2. Rust
-
-3. Node.js
-
-### Dependencies
-
-Refer to [tauri](https://tauri.app/start/prerequisites)
 
 ### Project structure
 
@@ -67,6 +49,7 @@ task build
 ```
 
 Run the newly built appimage
+
 ```bash
 chmod +x ./src-tauri/target/release/bundle/appimage/NeptuneWallet_<version>_amd64.AppImage
 ./src-tauri/target/release/bundle/appimage/NeptuneWallet_<version>_amd64.AppImage

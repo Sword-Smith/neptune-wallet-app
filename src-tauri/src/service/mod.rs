@@ -3,7 +3,7 @@ pub mod state;
 
 use once_cell::sync::Lazy;
 
-pub static STATE_MANAGER: Lazy<state::StateManager> = Lazy::new(|| state::StateManager::new());
+pub static STATE_MANAGER: Lazy<state::StateManager> = Lazy::new(state::StateManager::new);
 
 pub fn manage<T: Send + Sync + 'static>(value: T) -> Option<state::State<'static, T>> {
     if !STATE_MANAGER.set(value) {

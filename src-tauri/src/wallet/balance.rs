@@ -12,11 +12,9 @@ impl super::WalletState {
 
         let mut balance = 0i128;
         for utxo in utxos {
-            if utxo.spent_in_block.is_none() {
-                if utxo.recovery_data.utxo.can_spend_at(now) {
-                    let value = utxo.recovery_data.utxo.get_native_currency_amount();
-                    balance += value.to_nau();
-                }
+            if utxo.spent_in_block.is_none() && utxo.recovery_data.utxo.can_spend_at(now) {
+                let value = utxo.recovery_data.utxo.get_native_currency_amount();
+                balance += value.to_nau();
             }
         }
 

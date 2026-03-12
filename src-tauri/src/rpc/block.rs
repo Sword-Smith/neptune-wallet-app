@@ -1,8 +1,8 @@
 use axum_extra::response::ErasedJson;
 
-use crate::{rpc::WalletRpcImpl, rpc_client};
-
 use super::error::RestError;
+use crate::rpc::WalletRpcImpl;
+use crate::rpc_client;
 
 pub async fn get_tip_height() -> Result<ErasedJson, RestError> {
     Ok(ErasedJson::pretty(WalletRpcImpl::get_tip_height().await?))

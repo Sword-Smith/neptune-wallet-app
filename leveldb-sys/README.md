@@ -4,8 +4,8 @@ Lowlevel bindings to the leveldb C library.
 
 ## Dependencies
 
-* Your platforms C++ compiler (usually `gcc` or `clang` on Linux and Unix, Visual Studio Build environment on Windows)
-* `cmake`
+- Your platforms C++ compiler (usually `gcc` or `clang` on Linux and Unix, Visual Studio Build environment on Windows)
+- `cmake`
 
 ## Usage
 
