@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::collections::HashSet;
 use std::path::PathBuf;
 use std::ptr::null_mut;
 use std::range::Range;
@@ -375,14 +376,14 @@ impl WalletState {
         &self,
         block: &ExportedBlock,
     ) -> Result<Vec<(Utxo, AbsoluteIndexSet, i64)>> {
-        let confirmed_absolute_index_sets = block
+        let confirmed_absolute_index_sets: HashSet<_> = block
             .kernel
             .body
             .transaction_kernel()
             .inputs
             .iter()
             .map(|rr| rr.absolute_indices)
-            .collect_vec();
+            .collect();
 
         let monitored_utxos = self.get_unspent_utxos().await?;
         let mut spent_own_utxos = vec![];
@@ -398,7 +399,7 @@ impl WalletState {
         Ok(spent_own_utxos)
     }
 
-    // returns IncomingUtxo and
+    // returns (IncomingUtxo, txid) pairs
     pub async fn scan_for_expected_utxos(
         &self,
         block: &ExportedBlock,
