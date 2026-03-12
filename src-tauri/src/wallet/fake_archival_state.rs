@@ -13,7 +13,6 @@ use anyhow::ensure;
 use anyhow::Context;
 use anyhow::Result;
 use neptune_cash::api::export::Network;
-use neptune_cash::application::rest_server::ExportedBlock;
 use neptune_cash::prelude::tasm_lib::prelude::Digest;
 use serde::Deserialize;
 use serde::Serialize;
@@ -26,6 +25,7 @@ use tracing::*;
 use crate::rpc_client;
 use crate::wallet::block_cache::BlockCache;
 use crate::wallet::block_cache::BlockCacheImpl;
+use crate::wallet::wallet_block::WalletBlock;
 
 #[derive(Clone)]
 pub struct FakeArchivalState {
@@ -70,7 +70,7 @@ impl FakeArchivalState {
         &self,
         height: u64,
         batch_size: u64,
-    ) -> Option<Vec<ExportedBlock>> {
+    ) -> Option<Vec<WalletBlock>> {
         if let Some(reader) = self.snapshot_reader.as_ref() {
             return reader
                 .read_blocks(self.network, (height..height + batch_size).into())
@@ -79,7 +79,7 @@ impl FakeArchivalState {
         None
     }
 
-    pub async fn get_block_by_height(&self, height: u64) -> Result<Option<ExportedBlock>> {
+    pub async fn get_block_by_height(&self, height: u64) -> Result<Option<WalletBlock>> {
         if let Some(block) = self.block_cache.get_block_by_height(height).await? {
             return Ok(Some(block.clone()));
         }

@@ -3,18 +3,23 @@ use std::sync::atomic::Ordering;
 
 use anyhow::Context;
 use anyhow::Result;
+use neptune_cash::api::export::Digest;
 use neptune_cash::api::export::Transaction;
-use neptune_cash::application::rest_server::ExportedBlock;
+use neptune_cash::application::json_rpc::core::api::rpc::RpcApi;
+use neptune_cash::protocol::consensus::block::block_header::BlockHeader;
 use neptune_cash::protocol::consensus::block::block_info::BlockInfo;
 use neptune_cash::protocol::peer::transfer_transaction::TransferTransaction;
 use neptune_cash::util_types::mutator_set::archival_mutator_set::ResponseMsMembershipProofPrivacyPreserving;
 use neptune_cash::util_types::mutator_set::removal_record::absolute_index_set::AbsoluteIndexSet;
+use neptune_rpc_client::http::HttpClient;
 use once_cell::sync::Lazy;
 use reqwest;
 use serde::Deserialize;
 use serde::Serialize;
 use thiserror::Error;
 use tracing::info;
+
+use crate::wallet::wallet_block::WalletBlock;
 
 static NODE_RPC_CLIENT: Lazy<NodeRpcClient> = Lazy::new(|| NodeRpcClient::new(""));
 
@@ -23,7 +28,7 @@ pub fn node_rpc_client() -> &'static NodeRpcClient {
 }
 
 pub struct NodeRpcClient {
-    rest_server: AtomicPtr<String>,
+    rest_server: AtomicPtr<HttpClient>,
 }
 
 #[derive(Debug, Serialize, Clone)]
@@ -39,53 +44,50 @@ struct ResponseSendTx {
 
 impl NodeRpcClient {
     pub fn new(rest_server: &str) -> Self {
+        let client = HttpClient::new(rest_server);
         Self {
-            rest_server: AtomicPtr::new(Box::into_raw(Box::new(rest_server.to_string()))),
+            rest_server: AtomicPtr::new(Box::into_raw(Box::new(client))),
         }
     }
 
-    fn rest_server(&self) -> &str {
+    fn rest_server(&self) -> &HttpClient {
         (unsafe { &*self.rest_server.load(Ordering::Relaxed) }) as _
     }
 
     pub fn set_rest_server(&self, rest: String) {
+        let client = HttpClient::new(rest);
         self.rest_server.store(
-            Box::into_raw(Box::new(rest)),
+            Box::into_raw(Box::new(client)),
             std::sync::atomic::Ordering::Relaxed,
         );
     }
 
-    fn get_client() -> reqwest::Client {
-        reqwest::Client::new()
-    }
+    pub async fn request_block(&self, height: u64) -> Result<Option<WalletBlock>> {
+        let client = self.rest_server();
 
-    pub async fn request_block(&self, height: u64) -> Result<Option<ExportedBlock>> {
-        let block = Self::get_client()
-            .get(format!(
-                "{}/rpc/block/{}?include_proof=false",
-                self.rest_server(),
-                height
-            ))
-            .timeout(std::time::Duration::from_secs(30))
-            .send()
-            .await?
-            .error_for_status()?
-            .json::<Option<ExportedBlock>>()
-            .await?;
+        let height = height.into();
+        let block = client.get_blocks(height, height).await?;
+        let block = block.blocks.get(0).map(|x| x.clone().into());
 
         Ok(block)
     }
 
-    pub async fn get_tip_info(&self) -> Result<Option<BlockInfo>> {
-        let block = Self::get_client()
-            .get(format!("{}/rpc/block_info/tip", self.rest_server()))
-            .timeout(std::time::Duration::from_secs(15))
-            .send()
-            .await?
-            .error_for_status()?
-            .json::<Option<BlockInfo>>()
-            .await?;
-        Ok(block)
+    pub async fn get_tip_header(&self) -> Result<BlockHeader> {
+        let client = self.rest_server();
+
+        let header = client.tip_header().await?;
+        let header = header.header.into();
+
+        Ok(header)
+    }
+
+    pub async fn is_block_canonical(&self, digest: Digest) -> Result<bool> {
+        let client = self.rest_server();
+
+        let is_canonical = client.is_block_canonical(digest).await?;
+        let is_canonical = is_canonical.canonical;
+
+        Ok(is_canonical)
     }
 
     pub async fn get_block_info(&self, digest: &str) -> Result<Option<BlockInfo>> {

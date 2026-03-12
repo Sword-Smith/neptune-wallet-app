@@ -45,6 +45,8 @@ hyper-util = "0.1.10"
 itertools = "0.14.0"
 # neptune-cash = "0.7.0"
 neptune-cash = { path = "/home/thor/repos/neptune-core/neptune-core" }
+# neptune-rpc-client = "0.7.0"
+neptune-rpc-client = { path = "/home/thor/repos/neptune-core/neptune-rpc/client" }
 num-traits = "0.2.19"
 once_cell = "1.21.3"
 os_info = { version = "3.7.0", features = ["serde"] }

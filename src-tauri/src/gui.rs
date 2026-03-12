@@ -75,10 +75,11 @@ pub fn run() {
                 .expect("failed to get app data dir");
 
             let config = tauri::async_runtime::block_on(async {
-                let config = crate::config::Config::new(&data_dir).await.unwrap();
+                let mut config = crate::config::Config::new(&data_dir).await.unwrap();
 
-                crate::rpc_client::node_rpc_client()
-                    .set_rest_server(config.get_remote_rest().await.unwrap());
+                // crate::rpc_client::node_rpc_client()
+                //     .set_rest_server(config.get_remote_rest().await.unwrap());
+                config.set_rest_server(config.get_remote_rest().await.unwrap());
 
                 let level = config.get_log_level().await.unwrap();
                 crate::logger::setup_logger(level).unwrap();

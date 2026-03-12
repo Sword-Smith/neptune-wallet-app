@@ -4477,6 +4477,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "neptune-rpc-client"
+version = "0.7.0"
+dependencies = [
+ "async-trait",
+ "neptune-cash",
+ "reqwest",
+ "serde_json",
+]
+
+[[package]]
 name = "neptune-rpc-macros"
 version = "0.7.0"
 dependencies = [
@@ -4505,6 +4515,7 @@ dependencies = [
  "hyper-util",
  "itertools",
  "neptune-cash",
+ "neptune-rpc-client",
  "num-traits",
  "once_cell",
  "openssl-sys",

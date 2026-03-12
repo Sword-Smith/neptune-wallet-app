@@ -6,6 +6,7 @@ use anyhow::Context;
 use anyhow::Result;
 use neptune_cash::api::export::Network;
 use neptune_cash::application::config::data_directory::DataDirectory;
+use neptune_rpc_client::http::HttpClient;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use sha2::Digest;
@@ -147,6 +148,10 @@ impl Config {
             .get_data::<String>(key)
             .await?
             .unwrap_or("https://nptwallet.vxb.ai".to_string()))
+    }
+
+    pub async fn set_remote_rest_server(&mut self) {
+        self.
     }
 
     pub async fn decrypt_config(&self, password: &str) -> Result<()> {
