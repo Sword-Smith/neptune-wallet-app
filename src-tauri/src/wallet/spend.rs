@@ -223,9 +223,6 @@ impl super::WalletState {
         )
     }
 
-    /// Variant of [Self::create_transaction] that allows caller to specify
-    /// prover capability. [Self::create_transaction] is the preferred interface
-    /// for anything but tests.
     #[expect(clippy::too_many_arguments)]
     pub(crate) async fn create_transaction_with_prover_capability(
         &self,
@@ -324,8 +321,7 @@ impl super::WalletState {
     /// creates a Transaction.
     ///
     /// This API provides the caller complete control over selection of inputs
-    /// and outputs.  When fine grained control is not required,
-    /// [Self::create_transaction()] is easier to use and should be preferred.
+    /// and outputs.
     ///
     /// It is the caller's responsibility to provide inputs and outputs such
     /// that sum(inputs) == sum(outputs) + fee.  Else an error will result.
@@ -344,10 +340,6 @@ impl super::WalletState {
     /// Note that `create_raw_transaction()` does not modify any state and does
     /// not require acquiring write lock.  This is important because internally
     /// it calls prove() which is a very lengthy operation.
-    ///
-    /// Example:
-    ///
-    /// See the implementation of [Self::create_transaction()].
     pub(crate) async fn create_raw_transaction(
         &self,
         transaction_details: &TransactionDetails,

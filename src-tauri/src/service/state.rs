@@ -6,8 +6,6 @@ use std::pin::Pin;
 use std::sync::Mutex;
 
 /// A guard for a state value.
-///
-/// See [`Manager::manage`](`crate::Manager::manage`) for usage examples.
 pub struct State<'r, T: Send + Sync + 'static>(&'r T);
 
 impl<'r, T: Send + Sync + 'static> State<'r, T> {

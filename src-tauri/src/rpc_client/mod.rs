@@ -67,7 +67,7 @@ impl NodeRpcClient {
 
         let height = height.into();
         let block = client.get_blocks(height, height).await?;
-        let block: Option<WalletBlock> = block.blocks.get(0).map(|x| x.clone().into());
+        let block: Option<WalletBlock> = block.blocks.first().map(|x| x.clone().into());
 
         // Sanity check: block hash must be less than threshold dictated by
         // parent difficulty. But since we don't have parent, we just compare
