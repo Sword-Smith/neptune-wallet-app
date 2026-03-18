@@ -191,6 +191,7 @@ impl UtxoDbData {
 }
 
 pub struct ExpectedUtxoData {
+    #[expect(unused)]
     pub id: i64,
     pub txid: String,
     pub expected_utxo: ExpectedUtxo,
