@@ -651,14 +651,14 @@ mod tests {
         let mut tx = wallet_state.pool.begin().await.unwrap();
 
         wallet_state
-            .add_raw_hash_key(&mut *tx, Digest::try_from_hex("ded35bd6d93a222591ad88ebaea3ecc63598b30b18851231b50980557989734e362f5494404feb0e").unwrap())
+            .add_raw_hash_key(&mut tx, Digest::try_from_hex("ded35bd6d93a222591ad88ebaea3ecc63598b30b18851231b50980557989734e362f5494404feb0e").unwrap())
             .await
             .unwrap();
 
         println!("add 1");
 
         wallet_state
-            .add_raw_hash_key(&mut *tx, Digest::try_from_hex("ded35bd6d93a222591ad88ebaea3ecc63598b30b18851231b50980557989734e362f5494404feb0e").unwrap())
+            .add_raw_hash_key(&mut tx, Digest::try_from_hex("ded35bd6d93a222591ad88ebaea3ecc63598b30b18851231b50980557989734e362f5494404feb0e").unwrap())
             .await
             .unwrap();
 

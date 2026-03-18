@@ -287,7 +287,7 @@ impl Config {
         Ok(decoded)
     }
 
-    /// used to init or update the decrypt key, should be called after [`decrypt_config`] or first time set the password
+    /// used to init or update the decrypt key
     async fn update_decrypt_key(&self, secret_key: Vec<u8>) -> Result<()> {
         let mut decrypt_key_guard = self.decrypt_key.lock().await;
         let mut old_decrypt_key = decrypt_key_guard.clone();
