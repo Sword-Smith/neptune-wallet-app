@@ -57,7 +57,9 @@ impl super::WalletState {
         Ok(history)
     }
 
-    pub(crate) async fn get_all_balance(&self) -> Result<(NativeCurrencyAmount, NativeCurrencyAmount)> {
+    pub(crate) async fn get_all_balance(
+        &self,
+    ) -> Result<(NativeCurrencyAmount, NativeCurrencyAmount)> {
         let utxos = self.get_utxos().await?;
         let now = Timestamp::now();
 

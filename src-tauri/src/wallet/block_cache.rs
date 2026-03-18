@@ -13,7 +13,6 @@ use anyhow::Result;
 use enum_dispatch::enum_dispatch;
 use futures::lock::Mutex;
 use neptune_cash::api::export::Network;
-use neptune_cash::prelude::tasm_lib::prelude::Digest;
 use serde::Serialize;
 use sqlx::prelude::*;
 use sqlx_migrator::Info;
@@ -134,25 +133,6 @@ impl PersistBlockCache {
                 let pos = row.get::<i64, _>("pos");
                 let length = row.get::<i64, _>("length");
                 Ok(Some((pos, length)))
-            }
-            Err(sqlx::Error::RowNotFound) => Ok(None),
-            Err(err) => Err(err)?,
-        }
-    }
-
-    async fn find_block_by_digest(&self, digest: Digest) -> Result<Option<(i64, i64, i64)>> {
-        let mut conn = self.pool.acquire().await?;
-        let row = sqlx::query("SELECT height, pos, length FROM block_cache WHERE hash = ?")
-            .bind(digest.to_hex())
-            .fetch_one(&mut *conn)
-            .await;
-
-        match row {
-            Ok(row) => {
-                let height = row.get::<i64, _>("height");
-                let pos = row.get::<i64, _>("pos");
-                let length = row.get::<i64, _>("length");
-                Ok(Some((height, pos, length)))
             }
             Err(sqlx::Error::RowNotFound) => Ok(None),
             Err(err) => Err(err)?,
@@ -343,21 +323,6 @@ impl BlockCache for PersistBlockCache {
 
         Ok(Some(self.read_block_by_pos(height, pos, length).await?))
     }
-
-    async fn get_block_by_digest(&self, digest: Digest) -> Result<Option<WalletBlock>> {
-        if let Some(block) = self.memory_cache.get_block_by_digest(digest).await? {
-            return Ok(Some(block));
-        }
-
-        let (height, pos, length) = match self.find_block_by_digest(digest).await? {
-            Some(block_info) => block_info,
-            None => return Ok(None),
-        };
-
-        Ok(Some(
-            self.read_block_by_pos(height as u64, pos, length).await?,
-        ))
-    }
 }
 
 #[derive(Debug)]
@@ -419,15 +384,6 @@ impl BlockCache for MemoryBlockCache {
         Ok(None)
     }
 
-    async fn get_block_by_digest(&self, digest: Digest) -> Result<Option<WalletBlock>> {
-        let cache = self.cache.lock().await;
-        if let Some(block) = cache.iter().find(|b| b.hash == digest) {
-            return Ok(Some(block.clone()));
-        };
-
-        Ok(None)
-    }
-
     async fn delete_block_by_start_height(&self, start_height: u64) -> Result<()> {
         let mut cache = self.cache.lock().await;
         cache.retain(|b| b.kernel.header.height < start_height.into());
@@ -442,7 +398,6 @@ pub(super) trait BlockCache {
     async fn add_blocks_temp<T: Iterator<Item = WalletBlock>>(&self, blocks: T) -> Result<()>;
     async fn has_block_by_height(&self, height: u64) -> Result<bool>;
     async fn get_block_by_height(&self, height: u64) -> Result<Option<WalletBlock>>;
-    async fn get_block_by_digest(&self, digest: Digest) -> Result<Option<WalletBlock>>;
     async fn delete_block_by_start_height(&self, start_height: u64) -> Result<()>;
 }
 
@@ -457,7 +412,11 @@ impl BlockCacheImpl {
         BlockCacheImpl::Memory(MemoryBlockCache::new(cache_size))
     }
 
-    pub(crate) async fn new_persist(data_dir: &Path, network: Network, cache_size: usize) -> Result<Self> {
+    pub(crate) async fn new_persist(
+        data_dir: &Path,
+        network: Network,
+        cache_size: usize,
+    ) -> Result<Self> {
         Ok(BlockCacheImpl::Persist(
             PersistBlockCache::new(data_dir, network, cache_size).await?,
         ))

@@ -1,5 +1,3 @@
-use neptune_cash::api::export::NativeCurrencyAmount;
-use neptune_cash::api::export::Network;
 use neptune_cash::prelude::tasm_lib;
 use neptune_cash::prelude::triton_vm::proof::Proof;
 use tasm_lib::triton_vm::prelude::Program;
@@ -10,20 +8,10 @@ use tasm_lib::triton_vm::vm::NonDeterminism;
 use tracing::*;
 
 mod proof_collection;
-mod single_proof;
 
-pub(crate) struct ProofBuilder {
-    gobble_fee: Option<NativeCurrencyAmount>,
-    network: Network,
-}
+pub(crate) struct ProofBuilder {}
 
 impl ProofBuilder {
-    pub(crate) fn new(gobble_fee: Option<NativeCurrencyAmount>, network: Network) -> Self {
-        Self {
-            gobble_fee,
-            network,
-        }
-    }
     fn produce(
         program: Program,
         claim: Claim,

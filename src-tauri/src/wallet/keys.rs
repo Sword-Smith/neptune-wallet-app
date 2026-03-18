@@ -48,7 +48,10 @@ impl super::WalletState {
         self.num_future_keys.load(Ordering::Relaxed)
     }
 
-    pub(crate) fn get_future_symmetric_keys(&self, range: Range<u64>) -> Vec<(u64, Arc<SpendingKey>)> {
+    pub(crate) fn get_future_symmetric_keys(
+        &self,
+        range: Range<u64>,
+    ) -> Vec<(u64, Arc<SpendingKey>)> {
         let key = &self.key;
         (range.start..range.end)
             .into_par_iter()

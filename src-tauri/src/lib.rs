@@ -18,7 +18,6 @@ mod service;
 #[cfg(feature = "gui")]
 mod session_store;
 pub(crate) mod wallet;
-pub(crate) use neptune_cash;
 
 #[cfg(test)]
 pub(crate) mod tests;

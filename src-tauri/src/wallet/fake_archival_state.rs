@@ -14,7 +14,6 @@ use anyhow::Context;
 use anyhow::Result;
 use neptune_cash::api::export::Network;
 use neptune_cash::application::json_rpc::core::model::wallet::block::RpcWalletBlock;
-use neptune_cash::prelude::tasm_lib::prelude::Digest;
 use neptune_cash::protocol::consensus::block::Block;
 use num_traits::Zero;
 use serde::Deserialize;
@@ -107,21 +106,6 @@ impl FakeArchivalState {
         }
 
         Ok(result)
-    }
-
-    #[allow(dead_code)]
-    pub(crate) async fn get_block_by_digest(&self, digest: Digest) -> Result<Option<WalletBlock>> {
-        if let Some(block) = self.block_cache.get_block_by_digest(digest).await? {
-            return Ok(Some(block.clone()));
-        }
-
-        debug!(
-            "get_block_by_digest: requesting block {} from rest server",
-            digest.to_hex()
-        );
-        rpc_client::node_rpc_client()
-            .request_block_by_digest(digest)
-            .await
     }
 
     pub(crate) async fn reset_to_height(&self, height: u64) -> Result<()> {
@@ -268,7 +252,11 @@ impl SnapshotMetadata {
 }
 
 // [size][vec<block_pos>][0][vec[block]]
-pub(crate) async fn generate_snapshot(dir: &Path, network: Network, range: Range<u64>) -> Result<()> {
+pub(crate) async fn generate_snapshot(
+    dir: &Path,
+    network: Network,
+    range: Range<u64>,
+) -> Result<()> {
     let path = dir.join(format!(
         "neptune_{}_{}-{}.{}",
         network, range.start, range.end, SNAPSHOT_EXT

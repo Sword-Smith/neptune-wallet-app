@@ -8,17 +8,6 @@ use std::sync::Mutex;
 /// A guard for a state value.
 pub(crate) struct State<'r, T: Send + Sync + 'static>(&'r T);
 
-impl<'r, T: Send + Sync + 'static> State<'r, T> {
-    /// Retrieve a borrow to the underlying value with a lifetime of `'r`.
-    /// Using this method is typically unnecessary as `State` implements
-    /// [`std::ops::Deref`] with a [`std::ops::Deref::Target`] of `T`.
-    #[inline(always)]
-    #[allow(unused)]
-    pub(crate) fn inner(&self) -> &'r T {
-        self.0
-    }
-}
-
 impl<T: Send + Sync + 'static> std::ops::Deref for State<'_, T> {
     type Target = T;
 

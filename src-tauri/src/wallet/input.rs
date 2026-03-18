@@ -230,7 +230,10 @@ impl super::WalletState {
             .find(|k| k.lock_script_hash() == utxo.lock_script_hash())
     }
 
-    pub(crate) async fn get_recovery_data_from_utxo(&self, utxo: &Utxo) -> Result<UtxoRecoveryData> {
+    pub(crate) async fn get_recovery_data_from_utxo(
+        &self,
+        utxo: &Utxo,
+    ) -> Result<UtxoRecoveryData> {
         let digest = Tip5::hash(utxo);
         let db_data = self.get_utxo_db_data(&digest).await?;
         match db_data {

@@ -19,11 +19,6 @@ pub(crate) fn manage_or_replace<T: Send + Sync + 'static>(value: T) {
     STATE_MANAGER.set(value);
 }
 
-#[allow(unused)]
-pub(crate) fn unmanage<T: Send + Sync + 'static>() -> Option<T> {
-    unsafe { STATE_MANAGER.unmanage() }
-}
-
 pub(crate) fn get_state<T: Send + Sync + 'static>() -> state::State<'static, T> {
     STATE_MANAGER.get()
 }

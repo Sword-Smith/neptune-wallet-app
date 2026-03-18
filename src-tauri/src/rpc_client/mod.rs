@@ -9,18 +9,14 @@ use neptune_cash::api::export::Digest;
 use neptune_cash::api::export::Transaction;
 use neptune_cash::application::json_rpc::core::api::rpc::RpcApi;
 use neptune_cash::application::json_rpc::core::api::rpc::RpcError;
-use neptune_cash::application::json_rpc::core::model::wallet::block::RpcWalletBlock;
 use neptune_cash::application::json_rpc::core::model::wallet::transaction::RpcTransaction;
 use neptune_cash::protocol::consensus::block::block_header::BlockHeader;
 use neptune_cash::protocol::consensus::block::block_selector::BlockSelector;
-use neptune_cash::protocol::consensus::block::Block;
 use neptune_cash::util_types::mutator_set::archival_mutator_set::MsMembershipProofPrivacyPreserving;
 use neptune_cash::util_types::mutator_set::archival_mutator_set::ResponseMsMembershipProofPrivacyPreserving;
 use neptune_cash::util_types::mutator_set::removal_record::absolute_index_set::AbsoluteIndexSet;
 use neptune_rpc_client::http::HttpClient;
 use once_cell::sync::Lazy;
-use reqwest;
-use serde::Serialize;
 use thiserror::Error;
 use tracing::debug;
 
@@ -34,11 +30,6 @@ pub(crate) fn node_rpc_client() -> &'static NodeRpcClient {
 
 pub(crate) struct NodeRpcClient {
     rest_server: AtomicPtr<HttpClient>,
-}
-
-#[derive(Debug, Serialize, Clone)]
-pub(crate) struct BroadcastTx<'a> {
-    pub(crate) transaction: &'a Transaction,
 }
 
 impl NodeRpcClient {
@@ -122,21 +113,6 @@ impl NodeRpcClient {
         Ok(is_canonical)
     }
 
-    pub(crate) async fn request_block_by_digest(
-        &self,
-        digest: Digest,
-    ) -> Result<Option<WalletBlock>> {
-        debug!("request: request_block_by_digest, {digest:x}");
-        let client = self.rest_server();
-
-        let block = client.get_block(BlockSelector::Digest(digest)).await?;
-        let block: Option<Block> = block.block.map(|x| x.into());
-        let block: Option<RpcWalletBlock> = block.map(|x| (&x).into());
-        let block: Option<WalletBlock> = block.map(|x| x.into());
-
-        Ok(block)
-    }
-
     /// Get a batch of blocks, up to the specified batch size, where the first
     /// returned block is the canonical block of the specified height.
     pub(crate) async fn request_block_by_height_range(
@@ -161,7 +137,10 @@ impl NodeRpcClient {
         Ok(blocks)
     }
 
-    pub(crate) async fn broadcast_transaction(&self, tx: Transaction) -> Result<String, BroadcastError> {
+    pub(crate) async fn broadcast_transaction(
+        &self,
+        tx: Transaction,
+    ) -> Result<String, BroadcastError> {
         debug!("request: broadcast_transaction, with txid: {}", tx.txid());
 
         let client = self.rest_server();
@@ -217,8 +196,6 @@ impl NodeRpcClient {
 
 #[derive(Error, Debug)]
 pub(crate) enum BroadcastError {
-    #[error("proof machine is busy")]
-    Busy,
     #[error("Connection timeout")]
     Timeout,
     #[error("Connection error: {0}")]

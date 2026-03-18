@@ -165,29 +165,6 @@ impl UtxoDbData {
             .await?;
         Ok(())
     }
-
-    pub(crate) fn display_pretty(&self) -> String {
-        let amount = self
-            .recovery_data
-            .utxo
-            .get_native_currency_amount()
-            .display_n_decimals(6);
-
-        let aocl_index = self.recovery_data.aocl_index;
-
-        format!(
-            "WalletStateUtxo {{ id: {}, hash: {}, amount: {}, index: {}, spent_in_block: {:?}, confirmed_in_block: {:?}, abs_i : {:?}, sender_randomness: {}, receiver_preimage: {} }}",
-            self.id,
-            self.hash,
-            amount,
-            aocl_index,
-            self.spent_in_block,
-            self.confirmed_in_block,
-            self.recovery_data.abs_i(),
-            self.recovery_data.sender_randomness.to_hex(),
-            self.recovery_data.receiver_preimage.to_hex()
-        )
-    }
 }
 
 pub(crate) struct ExpectedUtxoData {
@@ -334,8 +311,6 @@ impl WalletState {
         }
     }
 
-    pub(crate) async fn flush(&self) {}
-
     pub(crate) async fn append_utxos(
         &self,
         tx: &mut SqliteConnection,
@@ -433,7 +408,10 @@ impl WalletState {
         }
     }
 
-    pub(crate) async fn get_unspent_utxos(&self, tx: &mut SqliteConnection) -> Result<Vec<UtxoDbData>> {
+    pub(crate) async fn get_unspent_utxos(
+        &self,
+        tx: &mut SqliteConnection,
+    ) -> Result<Vec<UtxoDbData>> {
         let rows = sqlx::query("SELECT * FROM wallet_state_utxos WHERE spent_in_block IS NULL")
             .fetch_all(&mut *tx)
             .await?;
@@ -530,7 +508,11 @@ impl WalletState {
     }
 
     //  add raw hash key; NOTE: this is unsafe, should only be called when syncing blocks
-    pub(crate) async fn add_raw_hash_key(&self, tx: &mut SqliteConnection, key: Digest) -> Result<()> {
+    pub(crate) async fn add_raw_hash_key(
+        &self,
+        tx: &mut SqliteConnection,
+        key: Digest,
+    ) -> Result<()> {
         let key_hex = key.to_hex();
         sqlx::query(
             "INSERT INTO wallet_state_raw_hash_keys (key) VALUES (?) ON CONFLICT DO NOTHING",
