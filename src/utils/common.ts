@@ -35,3 +35,5 @@ export function bigNumberDiv(a: any, b: any) {
   b = BigNumber(b);
   return a.div(b).toNumber();
 }
+
+export const sleep_milliseconds = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

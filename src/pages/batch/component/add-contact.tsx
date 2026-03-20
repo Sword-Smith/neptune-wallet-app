@@ -1,6 +1,7 @@
 import { Contact } from "@/database/types/contact";
 import { queryAllContacts } from "@/store/contact/contact-slice";
 import { useAppDispatch } from "@/store/hooks";
+import { sleep_milliseconds } from "@/utils/common";
 import { addContactAddress } from "@/utils/storage";
 import { Button, Flex, Modal, Textarea, TextInput, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
@@ -27,6 +28,7 @@ export default function AddContact({ opened, close }: { opened: boolean; close: 
         message: "Contact added successfully",
         color: "green",
       });
+      await sleep_milliseconds(100);
       dispatch(queryAllContacts());
       close();
     } catch (error: any) {
