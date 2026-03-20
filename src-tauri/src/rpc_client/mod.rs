@@ -19,6 +19,7 @@ use neptune_rpc_client::http::HttpClient;
 use once_cell::sync::Lazy;
 use thiserror::Error;
 use tracing::debug;
+use tracing::error;
 
 use crate::wallet::wallet_block::WalletBlock;
 
@@ -150,7 +151,16 @@ impl NodeRpcClient {
             .try_into()
             .expect("Transaction must be transferable, i.e. not leak secrets.");
 
-        let resp = client.submit_transaction(transaction).await?;
+        let resp = client.submit_transaction(transaction).await;
+
+        let resp = match resp {
+            Ok(resp) => resp,
+            Err(e) => {
+                error!("Failed to broadcast transaction: {e}");
+
+                return Err(BroadcastError::Server(e.into()));
+            }
+        };
 
         if !resp.success {
             return Err(BroadcastError::UnspecifiedServerError);

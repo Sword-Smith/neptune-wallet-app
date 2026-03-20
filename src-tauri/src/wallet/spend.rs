@@ -130,7 +130,7 @@ impl super::WalletState {
         let _ = crate::service::app::emit_event_to(
             "main",
             "send_state",
-            "stmi: step 5. save to updater.",
+            "stmi: step 6. store locally.",
         );
 
         let expected_utxo_data = utxos_sent_to_self
@@ -351,11 +351,6 @@ impl super::WalletState {
         Self::create_transaction_from_data_worker(transaction_details, proving_power).await
     }
 
-    // note: this executes the prover which can take a very
-    //       long time, perhaps minutes. It should never be
-    //       called directly.
-    //       Use create_transaction_from_data() instead.
-    //
     async fn create_transaction_from_data_worker(
         transaction_details: &TransactionDetails,
         proving_power: TxProvingCapability,

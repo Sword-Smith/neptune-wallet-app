@@ -173,10 +173,13 @@ impl TransactionUpdater {
         let transaction = wallet_state
             .create_raw_transaction(&transaction_details, TxProvingCapability::ProofCollection)
             .await?;
+        info!("Created transaction. Now ready to broadcast to server.");
 
-        let _new_id = rpc_client::node_rpc_client()
+        let txid = rpc_client::node_rpc_client()
             .broadcast_transaction(transaction)
             .await?;
+
+        info!("Successfully broadcasted transaction with txid {txid} to server.");
 
         Ok(transaction_details)
     }

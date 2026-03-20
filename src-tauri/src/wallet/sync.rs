@@ -257,7 +257,7 @@ impl SyncState {
         }
 
         let current_height = self.height.load(Ordering::Relaxed);
-        info!("syncing block {current_height}");
+        debug!("syncing block {current_height}");
 
         // Attempt to always have all blocks downloaded, before they need to be
         // processed.
