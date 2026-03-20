@@ -35,11 +35,3 @@ export function bigNumberDiv(a: any, b: any) {
   b = BigNumber(b);
   return a.div(b).toNumber();
 }
-
-function isPositiveNumber(numberStr: string) {
-  const num = parseFloat(numberStr);
-  if (isNaN(num)) {
-    return false;
-  }
-  return num < 0 ? false : true;
-}
