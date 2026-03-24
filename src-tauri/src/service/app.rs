@@ -30,16 +30,13 @@ pub(crate) struct UpdateInfo {
 #[cfg_attr(feature = "gui", tauri::command)]
 #[cfg(feature = "gui")]
 pub(crate) async fn update_info() -> Result<UpdateInfo, String> {
-    let resp = reqwest::get(
-        "https://raw.githubusercontent.com/VxBlocks/vxb_neptune_wallet/refs/heads/main/update.json",
-    )
-    .await
-    .map_err(|e| e.to_string())?
-    .json::<UpdateInfo>()
-    .await
-    .map_err(|e| e.to_string())?;
+    // TODO: Can be used to inform users of new updates, if desired.
+    let dummy_update_info = UpdateInfo {
+        version: env!("CARGO_PKG_VERSION").to_string(),
+        url: String::default(),
+    };
 
-    Ok(resp)
+    Ok(dummy_update_info)
 }
 
 #[cfg(all(feature = "gui", desktop))]
