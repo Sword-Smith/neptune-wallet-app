@@ -77,7 +77,7 @@ export default function CreateWallet({
         <Box pos="relative">
           <LoadingOverlay
             visible={!visibleMnemonic}
-            overlayProps={{ radius: "sm", blur: 4 }}
+            overlayProps={{ radius: "sm", blur: 4, color: "#eee", backgroundOpacity: 0.98 }}
             loaderProps={{
               children: (
                 <Center style={{ cursor: "pointer" }} onClick={() => showMnemonic()}>

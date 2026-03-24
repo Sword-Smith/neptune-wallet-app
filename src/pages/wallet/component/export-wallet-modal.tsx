@@ -65,7 +65,7 @@ export default function ExportWalletModal(props: Props) {
     setShowMnemonic(true);
     setTimeout(() => {
       setShowMnemonic(false);
-    }, 5000);
+    }, 12000);
   }
 
   return (
@@ -80,7 +80,12 @@ export default function ExportWalletModal(props: Props) {
             <Box pos="relative">
               <LoadingOverlay
                 visible={!showMnemonic}
-                overlayProps={{ radius: "sm", blur: 4 }}
+                overlayProps={{
+                  radius: "sm",
+                  blur: 20,
+                  color: "#eee",
+                  backgroundOpacity: 0.98,
+                }}
                 loaderProps={{
                   children: (
                     <Center style={{ cursor: "pointer" }} onClick={() => clickShowMnemonic}>
