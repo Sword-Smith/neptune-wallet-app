@@ -4414,7 +4414,7 @@ dependencies = [
 [[package]]
 name = "neptune-cash"
 version = "0.7.0"
-source = "git+https://github.com/Neptune-Crypto/neptune-core.git?rev=78428988406e9137543984b37db2e78d7f9100a8#78428988406e9137543984b37db2e78d7f9100a8"
+source = "git+https://github.com/Neptune-Crypto/neptune-core.git?rev=874b350ece5d69dcb833b507937c31b921d99c65#874b350ece5d69dcb833b507937c31b921d99c65"
 dependencies = [
  "aead",
  "aes-gcm",
@@ -4453,13 +4453,11 @@ dependencies = [
  "semver",
  "serde",
  "serde_arrays",
- "serde_derive",
  "serde_json",
  "serde_tuple",
  "sha2",
  "sha3",
  "strum",
- "strum_macros",
  "sysinfo",
  "systemstat",
  "tarpc",
@@ -4480,7 +4478,7 @@ dependencies = [
 [[package]]
 name = "neptune-rpc-client"
 version = "0.7.0"
-source = "git+https://github.com/Neptune-Crypto/neptune-core.git?rev=78428988406e9137543984b37db2e78d7f9100a8#78428988406e9137543984b37db2e78d7f9100a8"
+source = "git+https://github.com/Neptune-Crypto/neptune-core.git?rev=874b350ece5d69dcb833b507937c31b921d99c65#874b350ece5d69dcb833b507937c31b921d99c65"
 dependencies = [
  "async-trait",
  "neptune-cash",
@@ -4491,7 +4489,7 @@ dependencies = [
 [[package]]
 name = "neptune-rpc-macros"
 version = "0.7.0"
-source = "git+https://github.com/Neptune-Crypto/neptune-core.git?rev=78428988406e9137543984b37db2e78d7f9100a8#78428988406e9137543984b37db2e78d7f9100a8"
+source = "git+https://github.com/Neptune-Crypto/neptune-core.git?rev=874b350ece5d69dcb833b507937c31b921d99c65#874b350ece5d69dcb833b507937c31b921d99c65"
 dependencies = [
  "convert_case 0.8.0",
  "quote",
