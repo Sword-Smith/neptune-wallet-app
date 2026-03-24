@@ -1,4 +1,4 @@
-package ai.vxb.neptune.wallet
+package org.neptunefundamentals.wallet
 
 import android.graphics.Color
 import android.os.Bundle

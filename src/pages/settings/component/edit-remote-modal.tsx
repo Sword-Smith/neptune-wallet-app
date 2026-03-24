@@ -73,7 +73,7 @@ export default function EditRemoteModal({
             variant="default"
             w={"40%"}
             onClick={() => {
-              setNewValue("https://nptwallet.vxb.ai");
+              setNewValue("https://nptwallet.neptunefundamentals.org");
             }}
           >
             Restore default

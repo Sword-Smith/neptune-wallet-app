@@ -4,7 +4,7 @@ vxb neptune wallet is a cross-platform wallet for [neptunecash](https://github.c
 
 ## Development
 
-Refer to [neptune-wallet-core](https://github.com/VxBlocks/neptune-wallet-core) for server side source code. or read [self hosted server](#self-hosted-server) to run self hosted server.
+Refer to [neptune-wallet-core](https://github.com/Neptune-Crypto/neptune-core) for server side source code. or read [self hosted server](#self-hosted-server) to run self hosted server.
 
 ### Project structure
 
@@ -66,9 +66,11 @@ The wallet use a patched version of `neptune-core` to support rest api.
 To run a self hosted server, you need to:
 
 ```bash
-git clone https://github.com/VxBlocks/neptune-wallet-core -b wallet
+git clone https://github.com/Neptune-Crypto/neptune-core
 cd neptune-wallet-core
-cargo run --release -- --rest-port 9800
+cargo run --release -- --listen-rpc=<public-ip-or-localhost>:9797 --rpc-modules "node,chain,wallet,archival"
 ```
 
-Then you can set your server url in the wallet settings.
+Then you can set your server url in the wallet settings. No secrets are shared between server and
+your wallet, so a malicious server will not be able to steal your funds. Nor will
+someone listening in between be able to steal anything. Should you want to encrypt the connection between your wallet and your server anyway, you have to setup a reverse proxy yourself. `caddy` is a very fast way to achieve that.

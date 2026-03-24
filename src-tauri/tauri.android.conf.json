@@ -28,7 +28,7 @@
   },
   "productName": "NeptuneWallet",
   "mainBinaryName": "NeptuneWallet",
-  "identifier": "ai.vxb.neptune.wallet",
+  "identifier": "org.neptunefundamentals.wallet",
   "plugins": {},
   "app": {
     "withGlobalTauri": false,
