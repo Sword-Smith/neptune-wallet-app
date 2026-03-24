@@ -1,5 +1,3 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ExecutionState } from "../types";
 import { ExecutionHistory } from "@/database/types/localhistory";
 import { requestPendingTransactions, sendTransactionRequest } from "@/utils/api/apis";
 import {
@@ -9,6 +7,8 @@ import {
   SendTransactionResponse,
 } from "@/utils/api/types";
 import { addExecutionHistory, deleteExecutionHistory, getExecutionHistory } from "@/utils/storage";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { ExecutionState } from "../types";
 const initialState: ExecutionState = {
   loadingExecution: false,
   executionData: [],

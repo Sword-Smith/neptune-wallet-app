@@ -1,10 +1,18 @@
 import "@mantine/core/styles.css";
+import { notifications } from "@mantine/notifications";
+import { listen } from "@tauri-apps/api/event";
+import { useEffect } from "react";
 import "./app.css";
 import { ViewPort } from "./components/base/ViewPort";
-import { useEffect } from "react";
-import { useAppDispatch } from "./store/hooks";
+import WindowTitlebarCard from "./components/windowTitlebarCard";
+import { SYNC_FINISH_EVENT, SYNC_HEIGHT_EVENT, SYNC_SENT_STATUS_EVENT } from "./constant";
+import { checkHasUpdateVersion, queryAboutInfo } from "./store/about/about-slice";
 import { checkAuthPassword, startRunRpcServer } from "./store/auth/auth-slice";
 import { useAuth, useStartRpcServer } from "./store/auth/hooks";
+import { updateSendState } from "./store/execution/execution-slice";
+import { useRequesetSendTransactionResponse } from "./store/execution/hooks";
+import { useAppDispatch } from "./store/hooks";
+import { useCurrentPlatform, useSettingActionData } from "./store/settings/hooks";
 import { queryCurrentPlatform, querySettingActionData } from "./store/settings/settings-slice";
 import {
   handleFinishBlockStatus,
@@ -12,14 +20,6 @@ import {
   querySyncBlockStatus,
   updateSyncedBlock,
 } from "./store/sync/sync-slice";
-import { useCurrentPlatform, useSettingActionData } from "./store/settings/hooks";
-import { listen } from "@tauri-apps/api/event";
-import { SYNC_FINISH_EVENT, SYNC_HEIGHT_EVENT, SYNC_SENT_STATUS_EVENT } from "./constant";
-import { updateSendState } from "./store/execution/execution-slice";
-import { checkHasUpdateVersion, queryAboutInfo } from "./store/about/about-slice";
-import WindowTitlebarCard from "./components/windowTitlebarCard";
-import { notifications } from "@mantine/notifications";
-import { useRequesetSendTransactionResponse } from "./store/execution/hooks";
 
 function App() {
   const platform = useCurrentPlatform();

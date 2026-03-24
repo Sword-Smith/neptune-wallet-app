@@ -1,6 +1,3 @@
-import { Navigate, Outlet, type RouteObject } from "react-router-dom";
-import { lazy } from "react";
-import AboutPage from "../pages/about";
 import {
   IconDeviceImacUp,
   IconHistory,
@@ -10,6 +7,9 @@ import {
   IconTransfer,
   IconWallet,
 } from "@tabler/icons-react";
+import { lazy } from "react";
+import { Navigate, Outlet, type RouteObject } from "react-router-dom";
+import AboutPage from "../pages/about";
 
 const WalletPage = lazy(async () => await import("../pages/wallet"));
 const SettingsPage = lazy(async () => await import("../pages/settings"));

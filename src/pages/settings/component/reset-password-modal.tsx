@@ -1,7 +1,7 @@
 import { set_password } from "@/commands/password";
 import { useAppDispatch } from "@/store/hooks";
 import { querySettingActionData } from "@/store/settings/settings-slice";
-import { Modal, Flex, Button, PasswordInput, Stack, Text } from "@mantine/core";
+import { Button, Flex, Modal, PasswordInput, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { useEffect, useState } from "react";

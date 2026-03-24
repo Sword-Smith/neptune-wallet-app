@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Box, Collapse, Group, Indicator, Text, UnstyledButton } from "@mantine/core";
-import classes from "./index.module.css";
-import { useNavigate } from "react-router-dom";
 import { useUpdateVersion, useVersion } from "@/store/about/hooks";
+import { Box, Collapse, Group, Indicator, Text, UnstyledButton } from "@mantine/core";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import classes from "./index.module.css";
 
 interface LinksGroupProps {
   icon: React.FC<any>;

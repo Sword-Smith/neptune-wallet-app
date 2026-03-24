@@ -1,13 +1,13 @@
 import { useMnemonic } from "@/store/wallet/hooks";
-import { Flex, Text, Box, Grid, LoadingOverlay, Center, Button } from "@mantine/core";
+import { Box, Button, Center, Flex, Grid, LoadingOverlay, Text } from "@mantine/core";
 import { IconCircleCheck, IconCopy, IconEye, IconReload } from "@tabler/icons-react";
 import { useState } from "react";
 
-import * as bip39 from "@scure/bip39";
-import { wordlist } from "@scure/bip39/wordlists/english";
 import { useAppDispatch } from "@/store/hooks";
 import { setMnemonic } from "@/store/wallet/wallet-slice";
 import { notifications } from "@mantine/notifications";
+import * as bip39 from "@scure/bip39";
+import { wordlist } from "@scure/bip39/wordlists/english";
 interface Props {
   nextStep: () => void;
 }

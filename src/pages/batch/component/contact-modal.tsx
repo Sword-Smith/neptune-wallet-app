@@ -1,8 +1,8 @@
-import { Modal } from "@mantine/core";
-import ContactTable from "./contact-table";
-import { useEffect } from "react";
-import { useAppDispatch } from "@/store/hooks";
 import { queryAllContacts } from "@/store/contact/contact-slice";
+import { useAppDispatch } from "@/store/hooks";
+import { Modal } from "@mantine/core";
+import { useEffect } from "react";
+import ContactTable from "./contact-table";
 
 interface Props {
   opened: boolean;

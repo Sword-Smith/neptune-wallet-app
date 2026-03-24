@@ -1,4 +1,4 @@
-import { Button, Card, Center, Flex, Group, Text, Image } from "@mantine/core";
+import { Button, Card, Center, Flex, Group, Image, Text } from "@mantine/core";
 import { useState } from "react";
 import CreatePage from "../create";
 import ImportPage from "../import";

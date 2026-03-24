@@ -1,5 +1,6 @@
 import CopyedIcon from "@/components/copyed-icon";
 import { MerageHistory } from "@/store/types";
+import { bigNumberPlusToString } from "@/utils/common";
 import { ellipsisFormatLen } from "@/utils/ellipsis-format";
 import { amount_to_positive_fixed } from "@/utils/math-util";
 import {
@@ -13,9 +14,8 @@ import {
   Text,
 } from "@mantine/core";
 import { format } from "date-fns";
-import "./index.css";
 import HistoryUtxoCard from "./history-utxo";
-import { bigNumberPlusToString } from "@/utils/common";
+import "./index.css";
 
 interface Props {
   history: MerageHistory;

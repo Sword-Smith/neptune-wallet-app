@@ -1,9 +1,9 @@
 import WithTitlePageHeader from "@/components/header/withTitlePageHeader";
 import { useAppDispatch } from "@/store/hooks";
-import { useEffect } from "react";
 import { querySettingActionData } from "@/store/settings/settings-slice";
-import SettingList from "./component/setting-list";
 import { Flex, ScrollArea } from "@mantine/core";
+import { useEffect } from "react";
+import SettingList from "./component/setting-list";
 export default function SettingsPage() {
   const dispatch = useAppDispatch();
   useEffect(() => {

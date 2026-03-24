@@ -1,11 +1,11 @@
-import { Card, Flex, NumberFormatter, Progress, Space, Text } from "@mantine/core";
-import classes from "./sync.module.css";
-import { IconMeteor } from "@tabler/icons-react";
-import { useLatestBlock, useSyncedBlock } from "@/store/sync/hooks";
-import { useEffect } from "react";
 import { useAppDispatch } from "@/store/hooks";
-import { queryLatestBlock } from "@/store/sync/sync-slice";
 import { useSettingActionData } from "@/store/settings/hooks";
+import { useLatestBlock, useSyncedBlock } from "@/store/sync/hooks";
+import { queryLatestBlock } from "@/store/sync/sync-slice";
+import { Card, Flex, NumberFormatter, Progress, Space, Text } from "@mantine/core";
+import { IconMeteor } from "@tabler/icons-react";
+import { useEffect } from "react";
+import classes from "./sync.module.css";
 export default function SyncBlockCard() {
   const { serverUrl } = useSettingActionData();
   const syncedBlock = useSyncedBlock();

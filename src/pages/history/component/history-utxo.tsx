@@ -1,6 +1,6 @@
 import { HistoryUtxo } from "@/store/types";
 import { amount_to_positive_fixed } from "@/utils/math-util";
-import { Table, NumberFormatter, Text } from "@mantine/core";
+import { NumberFormatter, Table, Text } from "@mantine/core";
 
 export default function HistoryUtxoCard({ datas }: { datas: HistoryUtxo[] }) {
   const rows = datas.map((item, index) => (

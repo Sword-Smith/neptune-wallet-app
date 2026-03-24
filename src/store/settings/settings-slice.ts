@@ -1,10 +1,10 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { BlockCacheFile, Info, SettingActionData, SettingsState } from "../types";
 import { get_server_url } from "@/commands/app";
 import { get_list_cache, get_network, get_rest_url } from "@/commands/config";
-import { get_platform, os_info } from "@/commands/os";
 import { get_log_level } from "@/commands/log";
+import { get_platform, os_info } from "@/commands/os";
 import { handleServiceUrl } from "@/utils/url";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { BlockCacheFile, Info, SettingActionData, SettingsState } from "../types";
 
 const initialState: SettingsState = {
   acctionData: {

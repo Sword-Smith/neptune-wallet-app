@@ -1,6 +1,6 @@
 import { useCurrentPlatform } from "@/store/settings/hooks";
-import "./titlebar.css";
 import { Window } from "@tauri-apps/api/window";
+import "./titlebar.css";
 
 export default function WindowTitlebarCard() {
   const platform = useCurrentPlatform();

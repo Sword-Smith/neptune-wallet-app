@@ -3,9 +3,9 @@ import { setMnemonic, setOneTimePassword, setOneTimeWalletName } from "@/store/w
 import { Button, Flex, PasswordInput, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
-import { useCallback, useState } from "react";
 import * as bip39 from "@scure/bip39";
 import { wordlist } from "@scure/bip39/wordlists/english";
+import { useCallback, useState } from "react";
 
 interface Props {
   nextStep: () => void;

@@ -1,5 +1,5 @@
 import { MerageHistory } from "@/store/types";
-import { Table, Center, NumberFormatter, Text } from "@mantine/core";
+import { Center, NumberFormatter, Table, Text } from "@mantine/core";
 import { format } from "date-fns";
 import "./index.css";
 

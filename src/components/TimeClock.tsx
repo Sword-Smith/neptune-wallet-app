@@ -1,4 +1,4 @@
-import { CSSProperties, useState, useEffect } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 
 /**
  * Timer component. Pass in a timestamp, currently only accepts second-level timestamps. Millisecond support can be added later if needed.

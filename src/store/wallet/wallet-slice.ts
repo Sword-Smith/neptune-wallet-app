@@ -1,8 +1,8 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { Wallet, WalletState } from "../types";
 import { getCurrentWallet, getWalletAddress, getWallets } from "@/commands/wallet";
 import { requestWalletBalance } from "@/utils/api/apis";
 import { WalletBalanceData } from "@/utils/api/types";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { Wallet, WalletState } from "../types";
 
 const initialState: WalletState = {
   currentAddress: "",

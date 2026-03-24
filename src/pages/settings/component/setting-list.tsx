@@ -1,5 +1,10 @@
+import { snapshot_dir } from "@/commands/app";
+import { get_disk_cache, set_disk_cache, set_network } from "@/commands/config";
+import { set_log_level } from "@/commands/log";
+import { LOG_LEVELS, NETWORKS } from "@/constant";
+import { useSettingActionData } from "@/store/settings/hooks";
 import { Flex, Select, Switch } from "@mantine/core";
-import BaseItem from "./base-item";
+import { notifications } from "@mantine/notifications";
 import {
   IconCirclesRelation,
   IconCube,
@@ -13,17 +18,12 @@ import {
   IconPlugConnected,
   IconWorld,
 } from "@tabler/icons-react";
-import CopyedIcon from "../../../components/copyed-icon";
-import { useSettingActionData } from "@/store/settings/hooks";
+import { revealItemInDir } from "@tauri-apps/plugin-opener";
 import { useEffect, useState } from "react";
-import { LOG_LEVELS, NETWORKS } from "@/constant";
-import { set_log_level } from "@/commands/log";
-import { notifications } from "@mantine/notifications";
-import { get_disk_cache, set_disk_cache, set_network } from "@/commands/config";
+import CopyedIcon from "../../../components/copyed-icon";
+import BaseItem from "./base-item";
 import EditRemoteIcon from "./edit-remote-icon";
 import ResetPasswordIcon from "./reset-password-icon";
-import { snapshot_dir } from "@/commands/app";
-import { revealItemInDir } from "@tauri-apps/plugin-opener";
 import ResyncIcon from "./resync-icon";
 import TrashDiskIcon from "./trash-disk-icon";
 

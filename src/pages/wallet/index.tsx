@@ -1,12 +1,12 @@
+import { useAppDispatch } from "@/store/hooks";
+import { useSettingActionData } from "@/store/settings/hooks";
+import { useLatestBlock, useSyncedBlock } from "@/store/sync/hooks";
+import { queryWalletBalance, queryWallets } from "@/store/wallet/wallet-slice";
 import { Container, Flex } from "@mantine/core";
+import { useEffect } from "react";
 import BalanceCard from "./component/balanceCard";
 import BlockSyncCard from "./component/block-sync-card";
 import WalletTable from "./component/walletTable";
-import { useEffect } from "react";
-import { useAppDispatch } from "@/store/hooks";
-import { queryWalletBalance, queryWallets } from "@/store/wallet/wallet-slice";
-import { useSettingActionData } from "@/store/settings/hooks";
-import { useLatestBlock, useSyncedBlock } from "@/store/sync/hooks";
 
 export default function WalletPage() {
   const { serverUrl } = useSettingActionData();

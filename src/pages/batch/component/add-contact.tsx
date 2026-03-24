@@ -3,7 +3,7 @@ import { queryAllContacts } from "@/store/contact/contact-slice";
 import { useAppDispatch } from "@/store/hooks";
 import { sleep_milliseconds } from "@/utils/common";
 import { addContactAddress } from "@/utils/storage";
-import { Button, Flex, Modal, Textarea, TextInput, Text } from "@mantine/core";
+import { Button, Flex, Modal, Text, Textarea, TextInput } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useState } from "react";
 

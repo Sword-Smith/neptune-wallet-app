@@ -1,10 +1,10 @@
 import WithTitlePageHeader from "@/components/header/withTitlePageHeader";
-import { useState } from "react";
-import { SegmentedControl, Space } from "@mantine/core";
-import NewUtxoTable from "./component/new-utxo-table";
-import ActivityTableCard from "./component/activity-table-card";
 import { useActivityPerDay } from "@/store/history/hooks";
 import { BarChart } from "@mantine/charts";
+import { SegmentedControl, Space } from "@mantine/core";
+import { useState } from "react";
+import ActivityTableCard from "./component/activity-table-card";
+import NewUtxoTable from "./component/new-utxo-table";
 
 export default function HistoryPage() {
   const [section, setSection] = useState("activity");

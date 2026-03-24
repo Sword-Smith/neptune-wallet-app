@@ -1,13 +1,13 @@
-import { useActivityTransactions, useLoadingActivityTx } from "@/store/history/hooks";
-import { Accordion, Box, Flex, LoadingOverlay, ScrollArea, Select } from "@mantine/core";
-import NewActivityItem from "./new-activity-item";
 import EmptyTable from "@/components/empty-table";
-import { useEffect, useState } from "react";
 import { queryActivityHistory } from "@/store/history/history-slice.ts";
-import { useSettingActionData } from "@/store/settings/hooks.ts";
-import { useCurrentWalledId } from "@/store/wallet/hooks.ts";
+import { useActivityTransactions, useLoadingActivityTx } from "@/store/history/hooks";
 import { useAppDispatch } from "@/store/hooks.ts";
+import { useSettingActionData } from "@/store/settings/hooks.ts";
 import { useLatestBlock, useSyncedBlock } from "@/store/sync/hooks.ts";
+import { useCurrentWalledId } from "@/store/wallet/hooks.ts";
+import { Accordion, Box, Flex, LoadingOverlay, ScrollArea, Select } from "@mantine/core";
+import { useEffect, useState } from "react";
+import NewActivityItem from "./new-activity-item";
 
 export default function NewActivityTable() {
   const loading = useLoadingActivityTx();

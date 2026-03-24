@@ -8,10 +8,10 @@ import {
   Center,
   Flex,
   Group,
-  PasswordInput,
   Image,
-  Text,
+  PasswordInput,
   Space,
+  Text,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useCallback, useState } from "react";

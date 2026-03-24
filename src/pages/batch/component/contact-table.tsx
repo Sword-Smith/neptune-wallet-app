@@ -4,12 +4,12 @@ import { queryAllContacts } from "@/store/contact/contact-slice";
 import { useAllContacts, useLoadingContacts } from "@/store/contact/hooks";
 import { useAppDispatch } from "@/store/hooks";
 import { ellipsis } from "@/utils/ellipsis-format";
+import { deleteContactAddress } from "@/utils/storage";
 import { Box, Button, Center, Flex, LoadingOverlay, ScrollArea, Table, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconTrash } from "@tabler/icons-react";
 import { useState } from "react";
 import AddContact from "./add-contact";
-import { deleteContactAddress } from "@/utils/storage";
 
 export default function ContactTable() {
   const loading = useLoadingContacts();

@@ -1,8 +1,13 @@
 import CopyedIcon from "@/components/copyed-icon";
+import EmptyTable from "@/components/empty-table";
+import { queryAvailableUtxosList } from "@/store/history/history-slice";
 import { useAvailableUtxos, useLoadingAvailableUtxos } from "@/store/history/hooks";
+import { useAppDispatch } from "@/store/hooks";
+import { useSettingActionData } from "@/store/settings/hooks";
+import { useLatestBlock, useSyncedBlock } from "@/store/sync/hooks";
+import { useCurrentWalledId } from "@/store/wallet/hooks";
 import { ellipsisFormatLen } from "@/utils/ellipsis-format";
 import { amount_to_fixed } from "@/utils/math-util";
-import { format } from "date-fns";
 import {
   Box,
   Button,
@@ -17,14 +22,9 @@ import {
   Table,
   Text,
 } from "@mantine/core";
-import { queryAvailableUtxosList } from "@/store/history/history-slice";
-import { useAppDispatch } from "@/store/hooks";
-import { useSettingActionData } from "@/store/settings/hooks";
-import { useLatestBlock, useSyncedBlock } from "@/store/sync/hooks";
-import { useCurrentWalledId } from "@/store/wallet/hooks";
-import { useState, useEffect } from "react";
-import EmptyTable from "@/components/empty-table";
 import { IconSortDescending } from "@tabler/icons-react";
+import { format } from "date-fns";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function NewUtxoTable() {

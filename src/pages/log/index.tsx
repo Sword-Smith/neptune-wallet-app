@@ -1,11 +1,11 @@
+import { clear_logs } from "@/commands/log";
 import WithTitlePageHeader from "@/components/header/withTitlePageHeader";
 import { useAppDispatch } from "@/store/hooks";
 import { useLogs } from "@/store/log/hooks";
 import { queryLogMessages } from "@/store/log/log-slice";
 import { Button, Flex, ScrollArea } from "@mantine/core";
-import { useEffect, useRef, useState } from "react";
 import Ansi from "ansi-to-react";
-import { clear_logs } from "@/commands/log";
+import { useEffect, useRef, useState } from "react";
 
 export default function LogPage() {
   const dispatch = useAppDispatch();

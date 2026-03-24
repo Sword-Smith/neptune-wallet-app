@@ -1,4 +1,4 @@
-import { Flex, Center } from "@mantine/core";
+import { Center, Flex } from "@mantine/core";
 import IconEmpty from "./icons/icon-empty";
 
 const EmptyTable = ({ height = 402, padding = 30 }: { height?: number; padding?: number }) => {

@@ -1,8 +1,8 @@
+import { getWallets } from "@/commands/wallet";
+import { Contact } from "@/database/types/contact";
+import { getContactList } from "@/utils/storage";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ContactState } from "../types";
-import { Contact } from "@/database/types/contact";
-import { getWallets } from "@/commands/wallet";
-import { getContactList } from "@/utils/storage";
 const initialState: ContactState = {
   loadingContacts: false,
   contacts: [],

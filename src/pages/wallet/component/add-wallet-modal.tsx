@@ -1,14 +1,14 @@
+import { useAppDispatch } from "@/store/hooks";
+import { useSettingActionData } from "@/store/settings/hooks";
+import { querySyncBlockStatus } from "@/store/sync/sync-slice";
+import { queryWalletBalance, queryWallets } from "@/store/wallet/wallet-slice";
 import { Flex, Modal, SegmentedControl } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import * as bip39 from "@scure/bip39";
+import { wordlist } from "@scure/bip39/wordlists/english";
 import { useEffect, useState } from "react";
 import CreateWallet from "./create-wallet";
 import ImportWallet from "./import-wallet";
-import { useAppDispatch } from "@/store/hooks";
-import { queryWalletBalance, queryWallets } from "@/store/wallet/wallet-slice";
-import { querySyncBlockStatus } from "@/store/sync/sync-slice";
-import { useSettingActionData } from "@/store/settings/hooks";
-import * as bip39 from "@scure/bip39";
-import { wordlist } from "@scure/bip39/wordlists/english";
-import { notifications } from "@mantine/notifications";
 
 export default function AddWalletModal({
   opened,

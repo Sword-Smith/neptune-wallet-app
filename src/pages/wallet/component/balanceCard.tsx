@@ -1,14 +1,14 @@
 import { useBalanceData, useLoadingBalance } from "@/store/wallet/hooks";
 import { bigNumberMinus } from "@/utils/common";
 import {
+  Box,
+  Button,
   Card,
   Flex,
-  Text,
-  Box,
   Grid,
   LoadingOverlay,
-  Button,
   NumberFormatter,
+  Text,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";

@@ -1,7 +1,7 @@
+import { run_rpc_server } from "@/commands/app";
+import { has_password, try_password } from "@/commands/password";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { AuthData, AuthState } from "../types";
-import { run_rpc_server, stop_rpc_server } from "@/commands/app";
-import { has_password, try_password } from "@/commands/password";
 
 const initialState: AuthState = {
   startRpcServer: false,

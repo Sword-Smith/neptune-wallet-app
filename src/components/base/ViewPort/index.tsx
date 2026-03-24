@@ -1,11 +1,11 @@
-import { Suspense } from "react";
-import { AppShell } from "@mantine/core";
-import Navbar from "../../navbar";
-import { routesConfig } from "../../../routers";
-import { useRoutes } from "react-router-dom";
-import { useAuth } from "@/store/auth/hooks";
-import LockPage from "@/pages/lock";
 import LoadingPage from "@/components/loading-card";
+import LockPage from "@/pages/lock";
+import { useAuth } from "@/store/auth/hooks";
+import { AppShell } from "@mantine/core";
+import { Suspense } from "react";
+import { useRoutes } from "react-router-dom";
+import { routesConfig } from "../../../routers";
+import Navbar from "../../navbar";
 
 export const ViewPort = () => {
   const routes = useRoutes(routesConfig);

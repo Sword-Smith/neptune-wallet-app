@@ -1,11 +1,11 @@
-import { Box, Group, Space, Image, Flex } from "@mantine/core";
+import RustySessionStore from "@/commands/store";
+import { Box, Flex, Group, Image, Space } from "@mantine/core";
 import { useEffect, useState } from "react";
-import classes from "./navbar.module.css";
+import { useLocation, useNavigate } from "react-router-dom";
 import { linkdata } from "../../routers";
 import { LinksGroup } from "../base/navbar-links-group";
-import { useLocation, useNavigate } from "react-router-dom";
 import SyncBlockCard from "../card/sync-block-card";
-import RustySessionStore from "@/commands/store";
+import classes from "./navbar.module.css";
 function Navbar() {
   const [active, setActive] = useState("");
   const location = useLocation();

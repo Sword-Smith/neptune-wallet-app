@@ -1,6 +1,6 @@
+import { requestLatestBlock, requestStartScanBlockStatus } from "@/utils/api/apis";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { SyncState } from "../types";
-import { requestLatestBlock, requestStartScanBlockStatus } from "@/utils/api/apis";
 
 const initialState: SyncState = {
   latestBlock: 0,

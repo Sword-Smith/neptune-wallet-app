@@ -344,7 +344,10 @@ impl WalletState {
 
         let (own_guesser_address, guesser_key_preimage) = {
             let own_guesser_key = self.key.guesser_fee_key();
-            (own_guesser_key.to_address(), own_guesser_key.receiver_preimage())
+            (
+                own_guesser_key.to_address(),
+                own_guesser_key.receiver_preimage(),
+            )
         };
         let was_guessed_by_us = block
             .kernel
@@ -484,7 +487,6 @@ fn incoming_utxo_recovery_data_from_incomming_utxo(
         aocl_index,
     }
 }
-
 
 #[cfg(test)]
 mod tests {

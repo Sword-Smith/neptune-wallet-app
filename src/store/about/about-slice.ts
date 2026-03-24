@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { AboutState, BuildInfo, UpdateVersion } from "../types";
-import { getTauriVersion, getVersion } from "@tauri-apps/api/app";
 import { get_build_info, get_update_info } from "@/commands/app";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { getTauriVersion, getVersion } from "@tauri-apps/api/app";
+import { AboutState, BuildInfo, UpdateVersion } from "../types";
 
 const initialState: AboutState = {
   loadingAbout: false,

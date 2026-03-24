@@ -1,9 +1,9 @@
 import { useAppDispatch } from "@/store/hooks";
 import { setOneTimePassword, setOneTimeWalletName } from "@/store/wallet/wallet-slice";
-import { Flex, Stack, PasswordInput, Button, Text } from "@mantine/core";
+import { Button, Flex, PasswordInput, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 export default function ImportCreatePassword({ nextStep }: { nextStep: () => void }) {
   const [password, setPassword] = useState("");
   const [visible, { toggle }] = useDisclosure(false);

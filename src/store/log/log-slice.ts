@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { LogState } from "../types";
 import { get_logs } from "@/commands/log";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { LogState } from "../types";
 
 const initialState: LogState = {
   loadingLogs: false,

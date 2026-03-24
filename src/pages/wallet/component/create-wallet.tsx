@@ -3,7 +3,7 @@ import { useAppDispatch } from "@/store/hooks";
 import { useSettingActionData } from "@/store/settings/hooks";
 import { useLatestBlock } from "@/store/sync/hooks";
 import { queryLatestBlock } from "@/store/sync/sync-slice";
-import { Button, Flex, TextInput, Text, Box, LoadingOverlay, Grid, Center } from "@mantine/core";
+import { Box, Button, Center, Flex, Grid, LoadingOverlay, Text, TextInput } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconCircleCheck, IconCopy, IconEye, IconReload } from "@tabler/icons-react";
 import { useEffect, useState } from "react";

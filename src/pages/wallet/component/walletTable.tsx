@@ -1,4 +1,13 @@
+import { removeWallet, setCurrentWallet } from "@/commands/wallet";
+import CopyedIcon from "@/components/copyed-icon";
+import { useAppDispatch } from "@/store/hooks";
+import { useSettingActionData } from "@/store/settings/hooks";
+import { querySyncBlockStatus } from "@/store/sync/sync-slice";
+import { Wallet } from "@/store/types";
 import { useCurrentWalledId, useLoadingWallets, useWallets } from "@/store/wallet/hooks";
+import { queryWalletBalance, queryWallets } from "@/store/wallet/wallet-slice";
+import { ellipsis } from "@/utils/ellipsis-format";
+import { deleteContactAddress } from "@/utils/storage";
 import {
   Box,
   Button,
@@ -11,20 +20,11 @@ import {
   Text,
   useModalsStack,
 } from "@mantine/core";
-import { IconCheck, IconCirclePlus, IconStarFilled } from "@tabler/icons-react";
-import AddWalletModal from "./add-wallet-modal";
-import { useState } from "react";
-import { ellipsis } from "@/utils/ellipsis-format";
-import CopyedIcon from "@/components/copyed-icon";
-import { removeWallet, setCurrentWallet } from "@/commands/wallet";
-import { useAppDispatch } from "@/store/hooks";
-import { queryWalletBalance, queryWallets } from "@/store/wallet/wallet-slice";
 import { notifications } from "@mantine/notifications";
-import { Wallet } from "@/store/types";
-import { useSettingActionData } from "@/store/settings/hooks";
-import { querySyncBlockStatus } from "@/store/sync/sync-slice";
+import { IconCheck, IconCirclePlus, IconStarFilled } from "@tabler/icons-react";
+import { useState } from "react";
 import ActionMenu from "./action-menu";
-import { deleteContactAddress } from "@/utils/storage";
+import AddWalletModal from "./add-wallet-modal";
 import ExportWalletModal from "./export-wallet-modal";
 
 export default function WalletTable() {

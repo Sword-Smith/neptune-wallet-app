@@ -1,9 +1,9 @@
 import { Card, Flex, Space, Stepper, Text } from "@mantine/core";
+import { IconChevronLeft } from "@tabler/icons-react";
 import { useState } from "react";
 import CompletedContent from "../create/component/completed-content";
-import ImportCreatePassword from "./component/import-create-password";
 import ImportCecret from "./component/import-cecret";
-import { IconChevronLeft } from "@tabler/icons-react";
+import ImportCreatePassword from "./component/import-create-password";
 interface Props {
   onBack: () => void;
 }
